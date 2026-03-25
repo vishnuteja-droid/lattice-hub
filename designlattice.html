@@ -5532,8 +5532,12 @@ function seedTM(){
 (function init(){
   if(typeof mermaid==='undefined'){setTimeout(init,50);return;}
   mermaid.initialize({startOnLoad:false,theme:'default',securityLevel:'loose',logLevel:'error'});
-  // Show welcome view as the landing page
-  showWelcome();
+  // Deep link support
+  var hash=location.hash.slice(1);
+  if(hash&&hash.startsWith('type-')){setType(hash.slice(5),null);}
+  else if(hash&&(document.getElementById('view-'+hash)||document.querySelector('.nav-item[onclick*="\''+hash+'\'"]'))){showView(hash,null);}
+  else{showWelcome();}
+  window.addEventListener('hashchange',function(){var h=location.hash.slice(1);if(h&&h.startsWith('type-'))setType(h.slice(5),null);else if(h)showView(h,null);});
   seedTM();
   clearADR();
   resetRFC();

@@ -1031,7 +1031,10 @@ lazyBuild('glossary',()=>{
   document.getElementById('glossary-body').innerHTML=t.map(x=>`<div class="card"><div class="card-title">${x.t}</div><div class="card-desc">${x.d}</div></div>`).join('');
 });
 
-showWelcome();
+// Deep link support
+const hash=location.hash.slice(1);
+if(hash&&document.getElementById('view-'+hash)){showView(hash,null);}else{showWelcome();}
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&document.getElementById('view-'+h))showView(h,null);});
 </script>
 </body>
 </html>

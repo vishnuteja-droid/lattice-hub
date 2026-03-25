@@ -180,6 +180,46 @@ body{min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
   to{opacity:1;transform:translateY(0)}
 }
 
+/* ── SEARCH ── */
+.hub-search{
+  max-width:560px;width:100%;margin:0 auto;padding:0 24px 12px;
+  position:relative;animation:fadeUp .5s ease .15s both;
+  z-index:50;
+}
+.hub-search input{
+  width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);
+  color:var(--text);font-size:14px;padding:12px 16px 12px 40px;outline:none;
+  font-family:var(--font);transition:border-color .2s,box-shadow .2s;
+}
+.hub-search input:focus{border-color:rgba(255,255,255,0.2);box-shadow:0 0 0 3px rgba(255,255,255,0.04)}
+.hub-search input::placeholder{color:var(--text3)}
+.hub-search-icon{position:absolute;left:38px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text3);pointer-events:none}
+.hub-results{
+  position:absolute;top:100%;left:24px;right:24px;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);
+  max-height:360px;overflow-y:auto;z-index:100;display:none;
+  box-shadow:0 12px 32px rgba(0,0,0,0.4);
+}
+.hub-results.open{display:block}
+.hub-result{
+  display:flex;align-items:center;gap:10px;padding:10px 16px;
+  cursor:pointer;transition:background .1s;text-decoration:none;color:inherit;
+  border-bottom:1px solid var(--border);
+}
+.hub-result:last-child{border-bottom:none}
+.hub-result:hover{background:var(--bg3)}
+.hub-result-lattice{
+  font-size:9px;font-family:var(--mono);font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 7px;border-radius:4px;flex-shrink:0;white-space:nowrap;
+}
+.hub-result-lattice.blue{background:rgba(59,130,246,0.1);color:#3b82f6}
+.hub-result-lattice.green{background:rgba(16,185,129,0.1);color:#10b981}
+.hub-result-lattice.purple{background:rgba(167,139,250,0.1);color:#a78bfa}
+.hub-result-name{font-size:13px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hub-result-cat{font-size:10px;font-family:var(--mono);color:var(--text3);flex-shrink:0}
+.hub-no-result{padding:16px;text-align:center;font-size:12px;color:var(--text3)}
+.hub-search-hint{font-size:10px;color:var(--text3);text-align:center;margin-top:6px;font-family:var(--mono)}
+
 /* ── RESPONSIVE ── */
 @media(max-width:720px){
   .hero{padding:56px 20px 28px}
@@ -207,6 +247,13 @@ body{min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
   <h1>The Lattice <span class="thin">Ecosystem</span></h1>
   <p>Structured toolkits for engineers. Pick a lattice to dive into system design, coding interviews, and more.</p>
 </section>
+
+<!-- Search -->
+<div class="hub-search">
+  <span class="hub-search-icon">⌕</span>
+  <input type="text" id="hubSearch" placeholder="Search across all lattices… (Ctrl+/)" oninput="hubFilter(this.value)" onfocus="hubFocus()" autocomplete="off"/>
+  <div class="hub-results" id="hubResults"></div>
+</div>
 
 <!-- Lattice Grid -->
 <section class="lattice-grid" id="latticeGrid">
@@ -300,6 +347,157 @@ body{min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
   <span>·</span>
   <span>open source</span>
 </footer>
+<script>
+const IDX=[
+  // DesignLattice — Diagrams (type-)
+  {n:'Mind Map',cat:'Requirements',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-mindmap'},
+  {n:'User Journey',cat:'Requirements',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-journey'},
+  {n:'Quadrant / Radar',cat:'Requirements',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-quadrant'},
+  {n:'Gantt / Sprint',cat:'Requirements',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-gantt'},
+  {n:'Timeline',cat:'Requirements',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-timeline'},
+  {n:'Pie / XY Chart',cat:'Requirements',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-pie'},
+  {n:'Flowchart',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-flowchart'},
+  {n:'UML Class',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-uml-class'},
+  {n:'UML Sequence',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-uml-sequence'},
+  {n:'State Machine',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-state'},
+  {n:'ER Diagram',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-er'},
+  {n:'C4 Context',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-c4'},
+  {n:'Block Diagram',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-block'},
+  {n:'Architecture',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-architecture'},
+  {n:'API Map',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-api-map'},
+  {n:'Webhook Flow',cat:'Design',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-webhook'},
+  {n:'Git Branching',cat:'Development',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-git'},
+  {n:'Dependency Graph',cat:'Development',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-dep-graph'},
+  {n:'Monorepo Layout',cat:'Development',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-monorepo'},
+  {n:'CI/CD Pipeline',cat:'Deployment',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-cicd'},
+  {n:'Network Topology',cat:'Deployment',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-network'},
+  {n:'Log Pipeline',cat:'Deployment',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-log-pipeline'},
+  {n:'Metrics & Alerts',cat:'Deployment',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-metrics-flow'},
+  {n:'Incident Timeline',cat:'Deployment',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-incident-tl'},
+  {n:'RAG Pipeline',cat:'AI / ML',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-rag'},
+  {n:'ML Pipeline',cat:'AI / ML',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-ml-pipeline'},
+  {n:'LLM Integration',cat:'AI / ML',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-llm-seq'},
+  {n:'Agentic Workflow',cat:'AI / ML',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-agentic'},
+  {n:'AI Decision Tree',cat:'AI / ML',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-ai-decision'},
+  {n:'Prompt Template',cat:'AI / ML',l:'DesignLattice',c:'blue',href:'./designlattice.html#prompt-tpl'},
+  {n:'VPC Layout',cat:'Cloud',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-vpc'},
+  {n:'Serverless Event',cat:'Cloud',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-serverless'},
+  {n:'Multi-Region',cat:'Cloud',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-multiregion'},
+  {n:'Threat Model',cat:'Security',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-threat-model'},
+  {n:'Auth Flow',cat:'Security',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-auth-flow'},
+  {n:'Security Zones',cat:'Security',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-sec-zones'},
+  {n:'ETL / ELT Pipeline',cat:'Data',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-etl'},
+  {n:'Streaming Architecture',cat:'Data',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-streaming'},
+  {n:'Warehouse Schema',cat:'Data',l:'DesignLattice',c:'blue',href:'./designlattice.html#type-dwh-schema'},
+  // DesignLattice — Tools
+  {n:'ADR Builder',cat:'Decide',l:'DesignLattice',c:'blue',href:'./designlattice.html#adr'},
+  {n:'RFC / Proposal',cat:'Decide',l:'DesignLattice',c:'blue',href:'./designlattice.html#rfc'},
+  {n:'Post-Mortem',cat:'Decide',l:'DesignLattice',c:'blue',href:'./designlattice.html#postmortem'},
+  {n:'Trade-off Matrix',cat:'Decide',l:'DesignLattice',c:'blue',href:'./designlattice.html#tradeoff'},
+  {n:'Pattern Library',cat:'Decide',l:'DesignLattice',c:'blue',href:'./designlattice.html#patterns'},
+  {n:'Failure Handling Session',cat:'Sessions',l:'DesignLattice',c:'blue',href:'./designlattice.html#session'},
+  {n:'Best Practices',cat:'Reference',l:'DesignLattice',c:'blue',href:'./designlattice.html#practices'},
+  {n:'IT Glossary',cat:'Reference',l:'DesignLattice',c:'blue',href:'./designlattice.html#glossary'},
+
+  // CodeLattice — Patterns (pat-)
+  {n:'Two Pointers',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-two-pointers'},
+  {n:'Sliding Window',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-sliding-window'},
+  {n:'Fast & Slow',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-fast-slow'},
+  {n:'Merge Intervals',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-merge-intervals'},
+  {n:'Binary Search',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-binary-search'},
+  {n:'BFS',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-bfs'},
+  {n:'DFS',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-dfs'},
+  {n:'Backtracking',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-backtracking'},
+  {n:'Top K / Heap',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-top-k'},
+  {n:'Two Heaps',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-two-heaps'},
+  {n:'Monotonic Stack',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-monotonic-stack'},
+  {n:'Dynamic Programming',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-dp'},
+  {n:'Greedy',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-greedy'},
+  {n:'Topological Sort',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-topo-sort'},
+  {n:'Union-Find',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-union-find'},
+  {n:'Trie',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-trie'},
+  {n:'Prefix Sum',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-prefix-sum'},
+  {n:'Bit Manipulation',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-bit-manipulation'},
+  {n:'Cyclic Sort',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-cyclic-sort'},
+  {n:'K-way Merge',cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-k-way-merge'},
+  {n:"Kadane's Algorithm",cat:'Pattern',l:'CodeLattice',c:'green',href:'./codelattice.html#pat-kadanes'},
+  // CodeLattice — Data Structures (ds-)
+  {n:'Array',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-array'},
+  {n:'HashMap',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-hashmap'},
+  {n:'HashSet',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-hashset'},
+  {n:'Stack',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-stack'},
+  {n:'Queue',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-queue'},
+  {n:'Heap',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-heap'},
+  {n:'Linked List',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-linkedlist'},
+  {n:'Binary Tree',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-bintree'},
+  {n:'BST',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-bst'},
+  {n:'Graph',cat:'Data Structure',l:'CodeLattice',c:'green',href:'./codelattice.html#ds-graph'},
+  // CodeLattice — Tools
+  {n:'Approach Builder',cat:'Tool',l:'CodeLattice',c:'green',href:'./codelattice.html#approach'},
+  {n:'Interview Simulator',cat:'Tool',l:'CodeLattice',c:'green',href:'./codelattice.html#interview'},
+  {n:'Pattern Quiz',cat:'Tool',l:'CodeLattice',c:'green',href:'./codelattice.html#quiz'},
+  {n:'Study Plan',cat:'Tool',l:'CodeLattice',c:'green',href:'./codelattice.html#studyplan'},
+  {n:'Big-O Cheat Sheet',cat:'Reference',l:'CodeLattice',c:'green',href:'./codelattice.html#complexity'},
+  {n:'Sorting Algorithms',cat:'Reference',l:'CodeLattice',c:'green',href:'./codelattice.html#sorting'},
+  {n:'String Tricks',cat:'Reference',l:'CodeLattice',c:'green',href:'./codelattice.html#string-ref'},
+  {n:'Math & Formulas',cat:'Reference',l:'CodeLattice',c:'green',href:'./codelattice.html#math-ref'},
+  {n:'Graph Algorithms',cat:'Reference',l:'CodeLattice',c:'green',href:'./codelattice.html#graph-ref'},
+  {n:'Code Snippets',cat:'Reference',l:'CodeLattice',c:'green',href:'./codelattice.html#snippets'},
+  {n:'Quick Tips',cat:'Reference',l:'CodeLattice',c:'green',href:'./codelattice.html#cheatsheet'},
+
+  // APILattice — REST
+  {n:'REST Fundamentals',cat:'REST',l:'APILattice',c:'purple',href:'./apilattice.html#rest-fundamentals'},
+  {n:'Resource Naming',cat:'REST',l:'APILattice',c:'purple',href:'./apilattice.html#rest-naming'},
+  {n:'HTTP Methods',cat:'REST',l:'APILattice',c:'purple',href:'./apilattice.html#rest-methods'},
+  {n:'Status Codes',cat:'REST',l:'APILattice',c:'purple',href:'./apilattice.html#rest-status'},
+  {n:'Pagination & Filtering',cat:'REST',l:'APILattice',c:'purple',href:'./apilattice.html#rest-pagination'},
+  {n:'Error Handling (RFC 7807)',cat:'REST',l:'APILattice',c:'purple',href:'./apilattice.html#rest-errors'},
+  {n:'HATEOAS',cat:'REST',l:'APILattice',c:'purple',href:'./apilattice.html#rest-hateoas'},
+  // APILattice — GraphQL / gRPC
+  {n:'GraphQL Overview',cat:'GraphQL',l:'APILattice',c:'purple',href:'./apilattice.html#gql-overview'},
+  {n:'GraphQL Schema Design',cat:'GraphQL',l:'APILattice',c:'purple',href:'./apilattice.html#gql-schema'},
+  {n:'GraphQL Patterns',cat:'GraphQL',l:'APILattice',c:'purple',href:'./apilattice.html#gql-patterns'},
+  {n:'gRPC Overview',cat:'gRPC',l:'APILattice',c:'purple',href:'./apilattice.html#grpc-overview'},
+  {n:'Proto3 Reference',cat:'gRPC',l:'APILattice',c:'purple',href:'./apilattice.html#grpc-proto'},
+  {n:'Streaming Patterns',cat:'gRPC',l:'APILattice',c:'purple',href:'./apilattice.html#grpc-patterns'},
+  // APILattice — Security
+  {n:'Auth Patterns (OAuth, JWT, API Keys)',cat:'Security',l:'APILattice',c:'purple',href:'./apilattice.html#auth-patterns'},
+  {n:'Rate Limiting',cat:'Security',l:'APILattice',c:'purple',href:'./apilattice.html#rate-limiting'},
+  {n:'CORS',cat:'Security',l:'APILattice',c:'purple',href:'./apilattice.html#cors'},
+  {n:'Input Validation',cat:'Security',l:'APILattice',c:'purple',href:'./apilattice.html#input-validation'},
+  // APILattice — Versioning
+  {n:'Versioning Strategies',cat:'Versioning',l:'APILattice',c:'purple',href:'./apilattice.html#ver-strategies'},
+  {n:'Deprecation & Sunset',cat:'Versioning',l:'APILattice',c:'purple',href:'./apilattice.html#ver-deprecation'},
+  {n:'Breaking Changes',cat:'Versioning',l:'APILattice',c:'purple',href:'./apilattice.html#ver-breaking'},
+  // APILattice — Tools
+  {n:'OpenAPI Builder',cat:'Tool',l:'APILattice',c:'purple',href:'./apilattice.html#openapi-builder'},
+  {n:'Request Visualizer',cat:'Tool',l:'APILattice',c:'purple',href:'./apilattice.html#req-visualizer'},
+  {n:'Mock Builder',cat:'Tool',l:'APILattice',c:'purple',href:'./apilattice.html#mock-builder'},
+  // APILattice — Reference
+  {n:'API Design Checklist',cat:'Reference',l:'APILattice',c:'purple',href:'./apilattice.html#design-checklist'},
+  {n:'Richardson Maturity Model',cat:'Reference',l:'APILattice',c:'purple',href:'./apilattice.html#maturity-model'},
+  {n:'Common API Mistakes',cat:'Reference',l:'APILattice',c:'purple',href:'./apilattice.html#common-mistakes'},
+  {n:'API Glossary',cat:'Reference',l:'APILattice',c:'purple',href:'./apilattice.html#glossary'},
+];
+
+const resultsEl=document.getElementById('hubResults');
+const searchEl=document.getElementById('hubSearch');
+
+function hubFilter(q){
+  q=q.toLowerCase().trim();
+  if(!q){resultsEl.classList.remove('open');return;}
+  const hits=IDX.filter(i=>i.n.toLowerCase().includes(q)||i.cat.toLowerCase().includes(q)||i.l.toLowerCase().includes(q)).slice(0,12);
+  if(!hits.length){resultsEl.innerHTML='<div class="hub-no-result">No results for "'+q+'"</div>';resultsEl.classList.add('open');return;}
+  resultsEl.innerHTML=hits.map(h=>`<a class="hub-result" href="${h.href}"><span class="hub-result-lattice ${h.c}">${h.l}</span><span class="hub-result-name">${h.n}</span><span class="hub-result-cat">${h.cat}</span></a>`).join('');
+  resultsEl.classList.add('open');
+}
+function hubFocus(){if(searchEl.value.trim())hubFilter(searchEl.value);}
+document.addEventListener('click',e=>{if(!e.target.closest('.hub-search'))resultsEl.classList.remove('open');});
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='/'){e.preventDefault();searchEl.focus();}
+  if(e.key==='Escape'){searchEl.blur();resultsEl.classList.remove('open');}
+});
+</script>
 
 </body>
 </html>

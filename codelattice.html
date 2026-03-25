@@ -2670,7 +2670,19 @@ function buildSnippets(){
 // ═══════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════
-showWelcome();
+// Deep link support
+(function(){
+  function route(h){
+    if(!h)return showWelcome();
+    if(h.startsWith('pat-')){showPattern(h.slice(4),null);}
+    else if(h.startsWith('ds-')){showDS(h.slice(3),null);}
+    else if(document.getElementById('view-'+h)){showView(h,null);}
+    else showWelcome();
+  }
+  const hash=location.hash.slice(1);
+  if(hash){route(hash);}else{showWelcome();}
+  window.addEventListener('hashchange',()=>route(location.hash.slice(1)));
+})();
 </script>
 </body>
 </html>
