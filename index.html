@@ -220,6 +220,62 @@ body{min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
 .hub-no-result{padding:16px;text-align:center;font-size:12px;color:var(--text3)}
 .hub-search-hint{font-size:10px;color:var(--text3);text-align:center;margin-top:6px;font-family:var(--mono)}
 
+/* ── ANALYTICS DASHBOARD ── */
+.analytics-toggle{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  max-width:900px;width:100%;margin:0 auto;padding:0 24px;
+}
+.analytics-toggle button{
+  font-size:11px;font-family:var(--mono);padding:5px 14px;border-radius:20px;
+  border:1px solid var(--border2);background:transparent;color:var(--text3);
+  cursor:pointer;transition:all .15s;
+}
+.analytics-toggle button:hover{background:var(--bg3);color:var(--text)}
+.analytics-panel{
+  max-width:900px;width:100%;margin:0 auto;padding:0 24px 20px;display:none;
+}
+.analytics-panel.open{display:block}
+.an-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+.an-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px}
+.an-card-label{font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.an-card-val{font-size:22px;font-weight:700;font-family:var(--mono);color:var(--text)}
+.an-list{margin-top:12px}
+.an-list-title{font-size:11px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.an-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.an-row:last-child{border-bottom:none}
+.an-row-bar{height:4px;border-radius:2px;background:var(--accent);transition:width .3s}
+.an-row-name{flex:1;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.an-row-count{font-family:var(--mono);color:var(--text3);font-size:11px;flex-shrink:0}
+.an-row-lattice{font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:3px;flex-shrink:0}
+.an-row-lattice.blue{background:rgba(59,130,246,0.1);color:#3b82f6}
+.an-row-lattice.green{background:rgba(16,185,129,0.1);color:#10b981}
+.an-row-lattice.purple{background:rgba(167,139,250,0.1);color:#a78bfa}
+.fb-section{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.fb-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;font-size:12px}
+.fb-item-meta{font-size:10px;font-family:var(--mono);color:var(--text3);margin-bottom:4px}
+.fb-item-stars{color:var(--amber)}
+.fb-item-text{color:var(--text2)}
+
+/* ── FEEDBACK WIDGET ── */
+.fb-btn{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);color:var(--text3);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:999;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.fb-btn:hover{background:var(--bg4);color:var(--text);transform:scale(1.08)}
+.fb-panel{position:fixed;bottom:76px;right:20px;width:320px;background:var(--bg2);border:1px solid var(--border2);border-radius:11px;z-index:999;display:none;box-shadow:0 12px 40px rgba(0,0,0,0.5);overflow:hidden}
+.fb-panel.open{display:block}
+.fb-hdr{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.fb-hdr button{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px}
+.fb-body{padding:14px 16px}
+.fb-stars{display:flex;gap:6px;margin-bottom:12px}
+.fb-star{font-size:22px;cursor:pointer;color:var(--text3);transition:color .1s}
+.fb-star.active,.fb-star:hover{color:var(--amber)}
+.fb-ta{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:12px;padding:8px 10px;font-family:var(--font);resize:vertical;min-height:60px;outline:none}
+.fb-ta::placeholder{color:var(--text3)}
+.fb-ctx{font-size:10px;color:var(--text3);font-family:var(--mono);margin:8px 0 12px;padding:4px 8px;background:var(--bg3);border-radius:4px}
+.fb-actions{display:flex;gap:8px}
+.fb-actions button{font-size:11px;font-family:var(--mono);padding:5px 12px;border-radius:6px;border:1px solid var(--border2);cursor:pointer;transition:all .1s}
+.fb-save{background:rgba(255,255,255,.06);border-color:var(--border3)!important;color:var(--text2)}
+.fb-gh{background:var(--bg3);color:var(--text2)}
+.fb-toast{position:fixed;bottom:76px;right:20px;background:var(--bg4);border:1px solid rgba(74,222,128,.3);color:var(--green);font-size:12px;font-family:var(--mono);padding:8px 16px;border-radius:8px;z-index:1000;display:none}
+
 /* ── RESPONSIVE ── */
 @media(max-width:720px){
   .hero{padding:56px 20px 28px}
@@ -337,6 +393,28 @@ body{min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
   -->
 
 </section>
+
+<!-- Analytics -->
+<div class="analytics-toggle">
+  <button onclick="toggleAnalytics()">📊 Usage Analytics</button>
+</div>
+<div class="analytics-panel" id="analyticsPanel"></div>
+
+<!-- Feedback widget -->
+<button class="fb-btn" id="fbBtn" title="Send feedback">💬</button>
+<div class="fb-panel" id="fbPanel">
+  <div class="fb-hdr"><span>Feedback</span><button onclick="document.getElementById('fbPanel').classList.remove('open')">✕</button></div>
+  <div class="fb-body">
+    <div class="fb-stars" id="fbStars"><span class="fb-star" data-v="1" onclick="setFBStar(1)">★</span><span class="fb-star" data-v="2" onclick="setFBStar(2)">★</span><span class="fb-star" data-v="3" onclick="setFBStar(3)">★</span><span class="fb-star" data-v="4" onclick="setFBStar(4)">★</span><span class="fb-star" data-v="5" onclick="setFBStar(5)">★</span></div>
+    <textarea class="fb-ta" id="fbText" placeholder="What could be better? Ideas for new lattices or sections?"></textarea>
+    <div class="fb-ctx">📍 lattice-hub · home</div>
+    <div class="fb-actions">
+      <button class="fb-save" onclick="saveFB()">Save locally</button>
+      <button class="fb-gh" onclick="ghFB()">→ GitHub Issue</button>
+    </div>
+  </div>
+</div>
+<div class="fb-toast" id="fbToast">✓ Feedback saved</div>
 
 <!-- Footer -->
 <footer class="footer">
@@ -504,6 +582,98 @@ document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key==='/'){e.preventDefault();searchEl.focus();}
   if(e.key==='Escape'){searchEl.blur();resultsEl.classList.remove('open');}
 });
+// ═══════════════════════════════════════════════════════════
+//  ANALYTICS DASHBOARD
+// ═══════════════════════════════════════════════════════════
+const LATTICES=['designlattice','codelattice','apilattice'];
+const LATTICE_COLORS={designlattice:'blue',codelattice:'green',apilattice:'purple'};
+const LATTICE_NAMES={designlattice:'DesignLattice',codelattice:'CodeLattice',apilattice:'APILattice'};
+
+function toggleAnalytics(){
+  const panel=document.getElementById('analyticsPanel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open'))renderAnalytics();
+}
+
+function renderAnalytics(){
+  const panel=document.getElementById('analyticsPanel');
+  let totalViews=0,totalSessions=0;
+  const allViews=[];
+
+  LATTICES.forEach(lid=>{
+    const a=getA(lid);
+    const sess=parseInt(localStorage.getItem('lattice-sessions-'+lid)||'0');
+    totalSessions+=sess;
+    Object.entries(a).forEach(([view,data])=>{
+      totalViews+=data.count;
+      allViews.push({lattice:lid,view:view,count:data.count,last:data.last});
+    });
+  });
+
+  const top=allViews.sort((a,b)=>b.count-a.count).slice(0,15);
+  const maxCount=top.length?top[0].count:1;
+
+  // Feedback
+  let feedback=[];try{feedback=JSON.parse(localStorage.getItem('lattice-feedback')||'[]');}catch(e){}
+  const recentFB=feedback.slice(-5).reverse();
+
+  panel.innerHTML=`
+    <div class="an-grid">
+      <div class="an-card"><div class="an-card-label">Total Page Views</div><div class="an-card-val">${totalViews}</div></div>
+      <div class="an-card"><div class="an-card-label">Total Sessions</div><div class="an-card-val">${totalSessions}</div></div>
+      <div class="an-card"><div class="an-card-label">Unique Sections Visited</div><div class="an-card-val">${allViews.length}</div></div>
+      <div class="an-card"><div class="an-card-label">Feedback Collected</div><div class="an-card-val">${feedback.length}</div></div>
+    </div>
+    ${top.length?`
+    <div class="an-list">
+      <div class="an-list-title">Most visited sections</div>
+      ${top.map(r=>`<div class="an-row">
+        <span class="an-row-lattice ${LATTICE_COLORS[r.lattice]}">${LATTICE_NAMES[r.lattice]}</span>
+        <span class="an-row-name">${r.view}</span>
+        <span class="an-row-count">${r.count}×</span>
+        <div style="width:60px"><div class="an-row-bar" style="width:${Math.round(r.count/maxCount*100)}%;background:var(--${LATTICE_COLORS[r.lattice]==='blue'?'blue':LATTICE_COLORS[r.lattice]==='green'?'green':'accent'})"></div></div>
+      </div>`).join('')}
+    </div>`:'<div style="padding:16px;text-align:center;font-size:12px;color:var(--text3)">No analytics yet. Visit some lattice sections to start tracking.</div>'}
+    ${recentFB.length?`
+    <div class="an-list" style="margin-top:16px">
+      <div class="an-list-title">Recent Feedback</div>
+      <div class="fb-section">
+        ${recentFB.map(f=>`<div class="fb-item">
+          <div class="fb-item-meta">${LATTICE_NAMES[f.lattice]||f.lattice} · ${f.view} · ${new Date(f.ts).toLocaleDateString()} ${f.rating?`<span class="fb-item-stars">${'★'.repeat(f.rating)}${'☆'.repeat(5-f.rating)}</span>`:''}</div>
+          ${f.text?`<div class="fb-item-text">${f.text}</div>`:''}
+        </div>`).join('')}
+      </div>
+    </div>`:''}
+    <div style="margin-top:12px;text-align:center">
+      <button onclick="if(confirm('Clear all analytics and feedback data?')){LATTICES.forEach(l=>{localStorage.removeItem('lattice-analytics-'+l);localStorage.removeItem('lattice-sessions-'+l);});localStorage.removeItem('lattice-feedback');renderAnalytics();}" style="font-size:10px;font-family:var(--mono);padding:4px 10px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer">Reset all data</button>
+    </div>
+  `;
+}
+function getA(lid){try{return JSON.parse(localStorage.getItem('lattice-analytics-'+lid)||'{}');}catch(e){return {};}}
+
+// ═══════════════════════════════════════════════════════════
+//  FEEDBACK WIDGET (hub)
+// ═══════════════════════════════════════════════════════════
+let fbRating=0;
+document.getElementById('fbBtn').onclick=function(){document.getElementById('fbPanel').classList.toggle('open');};
+window.setFBStar=function(n){fbRating=n;document.querySelectorAll('.fb-star').forEach(s=>s.classList.toggle('active',parseInt(s.dataset.v)<=n));};
+window.saveFB=function(){
+  const text=document.getElementById('fbText').value.trim();
+  if(!text&&!fbRating)return;
+  const fb={lattice:'hub',view:'home',rating:fbRating,text:text,ts:Date.now()};
+  let all=[];try{all=JSON.parse(localStorage.getItem('lattice-feedback')||'[]');}catch(e){}
+  all.push(fb);try{localStorage.setItem('lattice-feedback',JSON.stringify(all));}catch(e){}
+  document.getElementById('fbText').value='';fbRating=0;
+  document.querySelectorAll('.fb-star').forEach(s=>s.classList.remove('active'));
+  document.getElementById('fbPanel').classList.remove('open');
+  const t=document.getElementById('fbToast');t.style.display='block';setTimeout(()=>t.style.display='none',2000);
+};
+window.ghFB=function(){
+  const text=document.getElementById('fbText').value.trim();
+  const title=encodeURIComponent('[Feedback] Hub — General');
+  const body=encodeURIComponent('**Lattice:** Hub\n**Rating:** '+(fbRating||'—')+'/5\n\n'+text+'\n\n---\n_Submitted via in-app feedback_');
+  window.open('https://github.com/USER/lattice-hub/issues/new?title='+title+'&body='+body+'&labels=feedback','_blank');
+};
 </script>
 
 </body>
