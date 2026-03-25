@@ -158,6 +158,9 @@ table.ref-table td:first-child{color:var(--text);font-weight:500}
   <div class="nav-item rest" onclick="showView('rest-pagination',this)"><span class="nicon">📄</span>Pagination</div>
   <div class="nav-item rest" onclick="showView('rest-errors',this)"><span class="nicon">⚠</span>Error Handling</div>
   <div class="nav-item rest" onclick="showView('rest-hateoas',this)"><span class="nicon">🔗</span>HATEOAS</div>
+  <div class="nav-item rest" onclick="showView('rest-webhooks',this)"><span class="nicon">↩</span>Webhooks</div>
+  <div class="nav-item rest" onclick="showView('rest-idempotency',this)"><span class="nicon">♻</span>Idempotency</div>
+  <div class="nav-item rest" onclick="showView('rest-caching',this)"><span class="nicon">⚡</span>Caching</div>
   <div class="ph-label gql" onclick="sbToggle(this)">GraphQL<span class="caret">▼</span></div>
   <div class="nav-item gql" onclick="showView('gql-overview',this)"><span class="nicon">◉</span>Overview</div>
   <div class="nav-item gql" onclick="showView('gql-schema',this)"><span class="nicon">📋</span>Schema Design</div>
@@ -175,6 +178,11 @@ table.ref-table td:first-child{color:var(--text);font-weight:500}
   <div class="nav-item ver" onclick="showView('ver-strategies',this)"><span class="nicon">🔀</span>Strategies</div>
   <div class="nav-item ver" onclick="showView('ver-deprecation',this)"><span class="nicon">📅</span>Deprecation</div>
   <div class="nav-item ver" onclick="showView('ver-breaking',this)"><span class="nicon">💥</span>Breaking Changes</div>
+  <div class="ph-label rest" onclick="sbToggle(this)" style="color:var(--amber)">Patterns<span class="caret">▼</span></div>
+  <div class="nav-item ver" onclick="showView('pat-gateway',this)"><span class="nicon">🚪</span>API Gateway</div>
+  <div class="nav-item ver" onclick="showView('pat-batch',this)"><span class="nicon">📦</span>Batch Operations</div>
+  <div class="nav-item ver" onclick="showView('pat-async',this)"><span class="nicon">⏳</span>Async APIs</div>
+  <div class="nav-item ver" onclick="showView('pat-realworld',this)"><span class="nicon">🌍</span>Real-world Examples</div>
   <div class="ph-label tool" onclick="sbToggle(this)">Tools<span class="caret">▼</span></div>
   <div class="nav-item tool" onclick="showView('openapi-builder',this)"><span class="nicon">📝</span>OpenAPI Builder</div>
   <div class="nav-item tool" onclick="showView('req-visualizer',this)"><span class="nicon">👁</span>Request Visualizer</div>
@@ -220,7 +228,7 @@ table.ref-table td:first-child{color:var(--text);font-weight:500}
       </div>
     </div>
     <div class="wlc-stats">
-      <div class="wlc-stat"><div class="wlc-stat-num">23</div><div class="wlc-stat-label">Guides</div></div>
+      <div class="wlc-stat"><div class="wlc-stat-num">30</div><div class="wlc-stat-label">Guides</div></div>
       <div class="wlc-stat"><div class="wlc-stat-num">3</div><div class="wlc-stat-label">Builders</div></div>
       <div class="wlc-stat"><div class="wlc-stat-num">70+</div><div class="wlc-stat-label">Status Codes</div></div>
       <div class="wlc-stat"><div class="wlc-stat-num">40+</div><div class="wlc-stat-label">Checklist Items</div></div>
@@ -255,6 +263,13 @@ table.ref-table td:first-child{color:var(--text);font-weight:500}
 <div id="view-maturity-model" class="view"><div class="tool-hdr"><span class="hdr-badge ref">Reference</span><div><div class="htitle">Richardson Maturity Model</div><div class="hsub">The 4 levels of REST maturity</div></div></div><div class="scroll-view" id="maturity-model-body"></div></div>
 <div id="view-common-mistakes" class="view"><div class="tool-hdr"><span class="hdr-badge ref">Reference</span><div><div class="htitle">Common Mistakes</div><div class="hsub">Anti-patterns to avoid in API design</div></div></div><div class="scroll-view" id="common-mistakes-body"></div></div>
 <div id="view-glossary" class="view"><div class="tool-hdr"><span class="hdr-badge ref">Reference</span><div><div class="htitle">API Glossary</div><div class="hsub">Terms every API designer should know</div></div></div><div class="scroll-view" id="glossary-body"></div></div>
+<div id="view-rest-webhooks" class="view"><div class="tool-hdr"><span class="hdr-badge rest">REST</span><div><div class="htitle">Webhooks</div><div class="hsub">Event-driven push notifications via HTTP callbacks</div></div></div><div class="scroll-view" id="rest-webhooks-body"></div></div>
+<div id="view-rest-idempotency" class="view"><div class="tool-hdr"><span class="hdr-badge rest">REST</span><div><div class="htitle">Idempotency</div><div class="hsub">Safe retries, idempotency keys, and exactly-once delivery</div></div></div><div class="scroll-view" id="rest-idempotency-body"></div></div>
+<div id="view-rest-caching" class="view"><div class="tool-hdr"><span class="hdr-badge rest">REST</span><div><div class="htitle">Caching</div><div class="hsub">HTTP caching, CDN, ETags, and conditional requests</div></div></div><div class="scroll-view" id="rest-caching-body"></div></div>
+<div id="view-pat-gateway" class="view"><div class="tool-hdr"><span class="hdr-badge ver">Pattern</span><div><div class="htitle">API Gateway</div><div class="hsub">Routing, aggregation, and cross-cutting concerns</div></div></div><div class="scroll-view" id="pat-gateway-body"></div></div>
+<div id="view-pat-batch" class="view"><div class="tool-hdr"><span class="hdr-badge ver">Pattern</span><div><div class="htitle">Batch Operations</div><div class="hsub">Bulk create, update, delete, and mixed batches</div></div></div><div class="scroll-view" id="pat-batch-body"></div></div>
+<div id="view-pat-async" class="view"><div class="tool-hdr"><span class="hdr-badge ver">Pattern</span><div><div class="htitle">Async APIs</div><div class="hsub">Polling, webhooks, SSE, and WebSockets</div></div></div><div class="scroll-view" id="pat-async-body"></div></div>
+<div id="view-pat-realworld" class="view"><div class="tool-hdr"><span class="hdr-badge ver">Pattern</span><div><div class="htitle">Real-world Examples</div><div class="hsub">How Stripe, GitHub, Twilio, and Slack design their APIs</div></div></div><div class="scroll-view" id="pat-realworld-body"></div></div>
 </div></div>
 <script>
 let currentView=null;
@@ -1029,6 +1044,476 @@ lazyBuild('glossary',()=>{
     {t:'Webhook',d:'Server-to-server callback triggered by events. Push model vs polling.'},
   ];
   document.getElementById('glossary-body').innerHTML=t.map(x=>`<div class="card"><div class="card-title">${x.t}</div><div class="card-desc">${x.d}</div></div>`).join('');
+});
+
+// ── WEBHOOKS ──
+lazyBuild('rest-webhooks',()=>{
+  document.getElementById('rest-webhooks-body').innerHTML=`
+    <div class="sec-head" style="color:var(--rest)">What is a Webhook?</div>
+    <div class="card"><div class="card-desc">A webhook is a user-defined HTTP callback. When an event occurs in your system, you send an HTTP POST to a URL the consumer registered. Push model — no polling required.</div>
+    <div class="flow"><span class="flow-node">Event occurs</span><span class="flow-arrow">→</span><span class="flow-node">Your server</span><span class="flow-arrow">→</span><span class="flow-node">POST to callback URL</span><span class="flow-arrow">→</span><span class="flow-node">Consumer's server</span></div></div>
+
+    <div class="sec-head" style="color:var(--amber)">Webhook Payload Design</div>
+    <div class="card"><pre class="code">POST https://consumer.example.com/webhooks
+Content-Type: application/json
+X-Webhook-Id: evt_abc123
+X-Webhook-Timestamp: 1704067200
+X-Webhook-Signature: sha256=a1b2c3d4...
+
+{
+  "id": "evt_abc123",
+  "type": "order.completed",
+  "created_at": "2024-01-01T12:00:00Z",
+  "data": {
+    "order_id": "ord_42",
+    "total": 99.99,
+    "currency": "USD",
+    "customer_id": "cus_7"
+  },
+  "api_version": "2024-01-01"
+}</pre>
+    <div class="card-note"><strong>id</strong> — unique event ID for deduplication<br/><strong>type</strong> — dot-separated event type (resource.action)<br/><strong>created_at</strong> — when the event actually happened<br/><strong>data</strong> — the actual payload, varies by event type<br/><strong>api_version</strong> — which API version generated this event</div></div>
+
+    <div class="sec-head" style="color:var(--sec)">Signature Verification</div>
+    <div class="card"><div class="card-desc">Always sign webhook payloads so consumers can verify they came from you. Use HMAC-SHA256 with a shared secret.</div>
+    <pre class="code">// Sender (your server)
+const signature = crypto
+  .createHmac('sha256', webhookSecret)
+  .update(timestamp + '.' + JSON.stringify(body))
+  .digest('hex');
+
+// Include in headers:
+// X-Webhook-Signature: sha256=&lt;signature&gt;
+// X-Webhook-Timestamp: &lt;unix_timestamp&gt;
+
+// Receiver (consumer's server)
+const expected = crypto
+  .createHmac('sha256', secret)
+  .update(timestamp + '.' + rawBody)
+  .digest('hex');
+
+if (signature !== expected) return res.status(401).send('Invalid signature');
+// Also reject if timestamp is > 5 minutes old (replay attack prevention)</pre></div>
+
+    <div class="sec-head" style="color:var(--grpc)">Retry Strategy</div>
+    <div class="card"><div class="card-desc">Consumers' servers go down. You need retries with exponential backoff.</div>
+    <pre class="code">Attempt 1: immediate
+Attempt 2: 1 minute
+Attempt 3: 5 minutes
+Attempt 4: 30 minutes
+Attempt 5: 2 hours
+Attempt 6: 8 hours
+Attempt 7: 24 hours → give up, mark as failed</pre>
+    <div class="card-note">✓ Treat any 2xx as success<br/>✓ Treat 410 Gone as "unsubscribe this webhook"<br/>✓ Treat 3xx, 4xx (except 410), 5xx, timeouts as failures → retry<br/>✓ Set a timeout (5-30 seconds) — don't wait forever<br/>✓ Log all delivery attempts for debugging</div></div>
+
+    <div class="sec-head" style="color:var(--tool)">Best Practices</div>
+    <div class="card"><div class="card-title">Send thin payloads, not fat ones</div><div class="card-desc">Include the event type and resource ID. Let the consumer fetch full details via API. This avoids stale data and reduces payload size.</div>
+    <pre class="code">// Thin (recommended)
+{ "type": "order.completed", "data": { "id": "ord_42" } }
+// Consumer calls GET /orders/ord_42 for full details
+
+// Fat (avoid unless consumer needs it immediately)
+{ "type": "order.completed", "data": { /* entire order object */ } }</pre></div>
+    <div class="card"><div class="card-title">Provide a registration API</div><pre class="code">POST /webhooks
+{
+  "url": "https://consumer.example.com/webhooks",
+  "events": ["order.completed", "payment.failed"],
+  "secret": "whsec_auto_generated"
+}
+
+// Response: 201 Created
+{ "id": "wh_1", "url": "...", "events": [...], "active": true }</pre></div>
+    <div class="card"><div class="card-title">Provide a test/ping endpoint</div><div class="card-desc">Let consumers trigger a test event to verify their setup: <code>POST /webhooks/wh_1/test</code></div></div>
+    <div class="card"><div class="card-title">Log deliveries</div><div class="card-desc">Expose a delivery log so consumers can debug failures: <code>GET /webhooks/wh_1/deliveries</code> — show attempt count, status code, response time, next retry.</div></div>
+  `;
+});
+
+// ── IDEMPOTENCY ──
+lazyBuild('rest-idempotency',()=>{
+  document.getElementById('rest-idempotency-body').innerHTML=`
+    <div class="sec-head" style="color:var(--rest)">Why Idempotency Matters</div>
+    <div class="card"><div class="card-desc">Networks are unreliable. A client sends a POST to create a payment. The server processes it, but the response is lost due to a timeout. The client retries. Without idempotency, the customer is charged twice.</div>
+    <div class="flow"><span class="flow-node">Client</span><span class="flow-arrow">→</span><span class="flow-node">POST /payments</span><span class="flow-arrow">→</span><span class="flow-node">Server creates payment</span><span class="flow-arrow">→</span><span class="flow-node" style="border-color:var(--red)">Response lost</span></div>
+    <div class="flow" style="margin-top:4px"><span class="flow-node">Client retries</span><span class="flow-arrow">→</span><span class="flow-node">POST /payments</span><span class="flow-arrow">→</span><span class="flow-node" style="border-color:var(--red)">Duplicate payment!</span></div></div>
+
+    <div class="sec-head" style="color:var(--amber)">HTTP Methods & Idempotency</div>
+    <table class="ref-table">
+      <thead><tr><th>Method</th><th>Idempotent?</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><span class="method get">GET</span></td><td style="color:var(--green)">Always</td><td>Read-only, no side effects</td></tr>
+        <tr><td><span class="method put">PUT</span></td><td style="color:var(--green)">Always</td><td>Same input → same final state</td></tr>
+        <tr><td><span class="method delete">DELETE</span></td><td style="color:var(--green)">Always</td><td>Delete once or twice → resource is gone</td></tr>
+        <tr><td><span class="method patch">PATCH</span></td><td style="color:var(--amber)">Depends</td><td>JSON Merge Patch = yes. JSON Patch "add" op = no</td></tr>
+        <tr><td><span class="method post">POST</span></td><td style="color:var(--red)">Never</td><td>Each call may create a new resource → needs Idempotency-Key</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sec-head" style="color:var(--grpc)">The Idempotency-Key Pattern</div>
+    <div class="card"><div class="card-desc">Client generates a unique key (UUID) and sends it with the request. Server checks if it's seen this key before. If yes → return the cached response. If no → process and store the result.</div>
+    <pre class="code">POST /payments
+Idempotency-Key: idk_550e8400-e29b-41d4-a716-446655440000
+Content-Type: application/json
+
+{ "amount": 99.99, "currency": "USD", "customer_id": "cus_7" }</pre></div>
+
+    <div class="card"><div class="card-title">Server Implementation</div>
+    <pre class="code">async function handlePayment(req, res) {
+  const key = req.headers['idempotency-key'];
+  if (!key) return res.status(400).json({ error: 'Idempotency-Key required' });
+
+  // Check if we've seen this key before
+  const cached = await redis.get('idk:' + key);
+  if (cached) {
+    const { status, body } = JSON.parse(cached);
+    return res.status(status).json(body);   // Return cached response
+  }
+
+  // Acquire lock to prevent concurrent processing of same key
+  const lock = await redis.set('lock:' + key, '1', 'NX', 'EX', 30);
+  if (!lock) return res.status(409).json({ error: 'Request in progress' });
+
+  try {
+    // Process the payment
+    const payment = await createPayment(req.body);
+    const result = { status: 201, body: payment };
+
+    // Cache the response (TTL: 24 hours)
+    await redis.set('idk:' + key, JSON.stringify(result), 'EX', 86400);
+    return res.status(201).json(payment);
+  } finally {
+    await redis.del('lock:' + key);
+  }
+}</pre></div>
+
+    <div class="sec-head" style="color:var(--sec)">Edge Cases</div>
+    <div class="card"><div class="card-title">Same key, different body</div><div class="card-desc">Return <span class="s4">422</span> — the key is already associated with a different request. Stripe does this.</div></div>
+    <div class="card"><div class="card-title">Key expiration</div><div class="card-desc">Store keys for 24-48 hours. After that, the same key can be reused. Document the TTL.</div></div>
+    <div class="card"><div class="card-title">Failed requests</div><div class="card-desc">Don't cache errors (5xx). Only cache successful responses and client errors (4xx). This lets the client retry on transient failures.</div></div>
+    <div class="card"><div class="card-title">Concurrent requests</div><div class="card-desc">Use a distributed lock (Redis SETNX) to prevent two requests with the same key from processing simultaneously. Return 409 if a lock is already held.</div></div>
+
+    <div class="sec-head" style="color:var(--tool)">Who Does This Well</div>
+    <div class="card-note"><strong>Stripe</strong> — Idempotency-Key on all POST requests. 24hr TTL. Returns cached response for duplicate keys.<br/><br/><strong>PayPal</strong> — PayPal-Request-Id header. Same concept.<br/><br/><strong>AWS</strong> — ClientToken parameter on many APIs (EC2, SQS). Prevents duplicate resource creation.<br/><br/><strong>Google Cloud</strong> — requestId parameter on create operations.</div>
+  `;
+});
+
+// ── CACHING ──
+lazyBuild('rest-caching',()=>{
+  document.getElementById('rest-caching-body').innerHTML=`
+    <div class="sec-head" style="color:var(--rest)">HTTP Caching Layers</div>
+    <div class="card">
+    <div class="flow"><span class="flow-node">Client cache</span><span class="flow-arrow">→</span><span class="flow-node">CDN / Proxy</span><span class="flow-arrow">→</span><span class="flow-node">API Gateway</span><span class="flow-arrow">→</span><span class="flow-node">App Server</span><span class="flow-arrow">→</span><span class="flow-node">Database</span></div>
+    <div class="card-desc" style="margin-top:10px">Every layer can cache. The further left you cache, the faster and cheaper the response. HTTP caching headers control all of this.</div></div>
+
+    <div class="sec-head" style="color:var(--amber)">Cache-Control Header</div>
+    <div class="card"><pre class="code">// Public — CDNs and browsers can cache
+Cache-Control: public, max-age=3600
+
+// Private — only the client browser can cache (has user-specific data)
+Cache-Control: private, max-age=300
+
+// No caching at all
+Cache-Control: no-store
+
+// Cache but always revalidate before using
+Cache-Control: no-cache
+
+// Immutable — never changes (versioned assets)
+Cache-Control: public, max-age=31536000, immutable
+
+// Stale-while-revalidate — serve stale while fetching fresh
+Cache-Control: public, max-age=60, stale-while-revalidate=300</pre>
+    <div class="card-note"><strong>max-age</strong> — seconds until the cached response expires<br/><strong>s-maxage</strong> — like max-age but for shared caches (CDNs) only<br/><strong>no-cache</strong> — can cache, but must revalidate with server every time<br/><strong>no-store</strong> — never cache anywhere (sensitive data)<br/><strong>immutable</strong> — content will never change at this URL</div></div>
+
+    <div class="sec-head" style="color:var(--grpc)">Conditional Requests — ETags</div>
+    <div class="card"><div class="card-desc">ETags let the server say "here's a fingerprint of this response." On subsequent requests, the client says "I have this fingerprint — has anything changed?"</div>
+    <pre class="code">// First request
+GET /users/42 → 200 OK
+ETag: "abc123"
+Cache-Control: no-cache
+
+// Subsequent request — client sends the ETag back
+GET /users/42
+If-None-Match: "abc123"
+
+// Server checks: data hasn't changed
+→ 304 Not Modified (no body, saves bandwidth)
+
+// Server checks: data HAS changed
+→ 200 OK (new body, new ETag)
+ETag: "def456"</pre></div>
+
+    <div class="card"><div class="card-title">ETags for Optimistic Concurrency</div><div class="card-desc">Use ETags to prevent lost updates. Client must send the ETag it received to prove it has the latest version.</div>
+    <pre class="code">// Client reads user
+GET /users/42 → ETag: "v3"
+
+// Client updates (must include ETag)
+PUT /users/42
+If-Match: "v3"
+{ "name": "Alice Updated" }
+
+// If another client updated in between:
+→ 412 Precondition Failed (your version is stale, re-fetch and retry)
+
+// If ETag matches:
+→ 200 OK, ETag: "v4"</pre></div>
+
+    <div class="sec-head" style="color:var(--sec)">Last-Modified / If-Modified-Since</div>
+    <div class="card"><div class="card-desc">Like ETags but with timestamps. Simpler but less precise (1-second resolution). ETags are preferred.</div>
+    <pre class="code">// First request
+GET /reports/monthly → 200
+Last-Modified: Wed, 21 Oct 2024 07:28:00 GMT
+
+// Conditional request
+GET /reports/monthly
+If-Modified-Since: Wed, 21 Oct 2024 07:28:00 GMT
+→ 304 Not Modified (or 200 with new data)</pre></div>
+
+    <div class="sec-head" style="color:var(--tool)">Caching Strategy by Resource Type</div>
+    <table class="ref-table">
+      <thead><tr><th>Resource</th><th>Strategy</th><th>Cache-Control</th></tr></thead>
+      <tbody>
+        <tr><td>Static assets (JS, CSS, images)</td><td>Long-lived, versioned URL</td><td>public, max-age=31536000, immutable</td></tr>
+        <tr><td>API list endpoints</td><td>Short TTL, revalidate</td><td>public, max-age=60, s-maxage=300</td></tr>
+        <tr><td>Single resource (GET /users/42)</td><td>ETag + no-cache</td><td>no-cache, ETag</td></tr>
+        <tr><td>User-specific data</td><td>Private, short TTL</td><td>private, max-age=60</td></tr>
+        <tr><td>Real-time data (stock prices)</td><td>No cache</td><td>no-store</td></tr>
+        <tr><td>Search results</td><td>Short shared cache</td><td>public, s-maxage=120</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sec-head" style="color:var(--gql)">Cache Invalidation</div>
+    <div class="card"><div class="card-desc">"There are only two hard things in CS: cache invalidation and naming things." Here's how to handle it:</div>
+    <div class="card-note"><strong>TTL-based</strong> — set max-age and accept staleness. Simplest.<br/><br/><strong>Event-based</strong> — purge CDN cache when data changes (via webhooks or message queue).<br/><br/><strong>Versioned URLs</strong> — /v2/users or /users?v=abc123 — new version = cache miss = fresh data.<br/><br/><strong>Surrogate keys</strong> — tag cached responses with resource IDs. Purge all responses tagged "user:42" when that user changes. Fastly and Cloudflare support this.</div></div>
+  `;
+});
+
+// ── API GATEWAY ──
+lazyBuild('pat-gateway',()=>{
+  document.getElementById('pat-gateway-body').innerHTML=`
+    <div class="sec-head" style="color:var(--amber)">What is an API Gateway?</div>
+    <div class="card"><div class="card-desc">A single entry point for all API traffic. Sits between clients and your backend services. Handles cross-cutting concerns so your services don't have to.</div>
+    <div class="flow"><span class="flow-node">Mobile app</span><span class="flow-arrow">→</span><span class="flow-node" style="border-color:var(--accent)">API Gateway</span><span class="flow-arrow">→</span><span class="flow-node">User Service</span></div>
+    <div class="flow"><span class="flow-node">Web app</span><span class="flow-arrow">→</span><span class="flow-node" style="border-color:var(--accent)">API Gateway</span><span class="flow-arrow">→</span><span class="flow-node">Order Service</span></div>
+    <div class="flow"><span class="flow-node">Partner API</span><span class="flow-arrow">→</span><span class="flow-node" style="border-color:var(--accent)">API Gateway</span><span class="flow-arrow">→</span><span class="flow-node">Payment Service</span></div></div>
+
+    <div class="sec-head" style="color:var(--rest)">Core Responsibilities</div>
+    <div class="card"><div class="card-title">Request routing</div><div class="card-desc">Route /users/* to User Service, /orders/* to Order Service. Path-based, header-based, or method-based routing.</div></div>
+    <div class="card"><div class="card-title">Authentication & authorization</div><div class="card-desc">Validate JWTs, API keys, or OAuth tokens at the gateway. Backend services receive pre-authenticated requests with user context.</div></div>
+    <div class="card"><div class="card-title">Rate limiting</div><div class="card-desc">Enforce per-client limits at the edge before requests hit your services. Centralized policy.</div></div>
+    <div class="card"><div class="card-title">Request/response transformation</div><div class="card-desc">Add/remove headers, transform request bodies, convert XML to JSON, aggregate responses from multiple services.</div></div>
+    <div class="card"><div class="card-title">Load balancing</div><div class="card-desc">Distribute traffic across service instances. Health checks to route around failures.</div></div>
+    <div class="card"><div class="card-title">Observability</div><div class="card-desc">Centralized logging, metrics, and tracing. Add X-Request-Id, measure latency, count errors — all in one place.</div></div>
+
+    <div class="sec-head" style="color:var(--grpc)">Gateway Patterns</div>
+    <div class="card"><div class="card-title">Backend for Frontend (BFF)</div><div class="card-desc">Separate gateway per client type. Mobile BFF returns compact payloads, web BFF returns rich data, partner BFF has stricter rate limits. Each optimized for its consumer.</div></div>
+    <div class="card"><div class="card-title">API Composition / Aggregation</div><div class="card-desc">Client needs data from 3 services. Gateway calls all 3 in parallel, merges responses, returns one payload. Reduces client round trips.</div>
+    <pre class="code">// Client makes one call:
+GET /dashboard
+
+// Gateway internally calls:
+// GET /users/42 → user profile
+// GET /orders?user=42&limit=5 → recent orders
+// GET /notifications?user=42 → unread count
+
+// Returns merged response:
+{ "user": {...}, "recent_orders": [...], "unread": 3 }</pre></div>
+    <div class="card"><div class="card-title">Circuit Breaker</div><div class="card-desc">If a backend service fails repeatedly, the gateway stops forwarding requests (circuit "opens"). After a cooldown, it sends a test request. If it succeeds, traffic resumes. Prevents cascade failures.</div>
+    <div class="card-note">Closed → requests flow normally<br/>Open → all requests fail-fast with 503 (don't hit the broken service)<br/>Half-open → one test request allowed; if it succeeds, close the circuit</div></div>
+
+    <div class="sec-head" style="color:var(--sec)">Popular Gateways</div>
+    <table class="ref-table">
+      <thead><tr><th>Gateway</th><th>Type</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td>Kong</td><td>Open-source</td><td>Plugin ecosystem, Kubernetes-native</td></tr>
+        <tr><td>AWS API Gateway</td><td>Managed</td><td>Lambda integration, serverless</td></tr>
+        <tr><td>Nginx / Envoy</td><td>Proxy-based</td><td>High performance, service mesh</td></tr>
+        <tr><td>Cloudflare Workers</td><td>Edge</td><td>Edge computing, global routing</td></tr>
+        <tr><td>Apigee</td><td>Enterprise</td><td>API management, analytics, monetization</td></tr>
+      </tbody>
+    </table>
+  `;
+});
+
+// ── BATCH OPERATIONS ──
+lazyBuild('pat-batch',()=>{
+  document.getElementById('pat-batch-body').innerHTML=`
+    <div class="sec-head" style="color:var(--amber)">Why Batch?</div>
+    <div class="card"><div class="card-desc">Creating 100 users one-by-one = 100 HTTP requests, 100 DB transactions. A batch endpoint lets you do it in 1 request. Reduces latency, network overhead, and DB load.</div></div>
+
+    <div class="sec-head" style="color:var(--rest)">Batch Create</div>
+    <div class="card"><pre class="code">POST /users/batch
+Content-Type: application/json
+
+{
+  "items": [
+    { "name": "Alice", "email": "alice@example.com" },
+    { "name": "Bob",   "email": "bob@example.com" },
+    { "name": "Carol", "email": "carol@example.com" }
+  ]
+}
+
+// Response: 200 (not 201 — some may have failed)
+{
+  "results": [
+    { "index": 0, "status": 201, "data": { "id": "u_1", "name": "Alice" } },
+    { "index": 1, "status": 201, "data": { "id": "u_2", "name": "Bob" } },
+    { "index": 2, "status": 409, "error": { "message": "Email already exists" } }
+  ],
+  "summary": { "total": 3, "succeeded": 2, "failed": 1 }
+}</pre>
+    <div class="card-note">Return <strong>200</strong> for the batch itself, with per-item status codes inside. Don't return 201 — that implies all succeeded.</div></div>
+
+    <div class="sec-head" style="color:var(--grpc)">Batch Update / Delete</div>
+    <div class="card"><pre class="code">// Batch update
+PATCH /users/batch
+{
+  "items": [
+    { "id": "u_1", "role": "admin" },
+    { "id": "u_2", "role": "moderator" }
+  ]
+}
+
+// Batch delete
+DELETE /users/batch
+{ "ids": ["u_1", "u_2", "u_3"] }
+
+// Or via query param:
+DELETE /users?ids=u_1,u_2,u_3</pre></div>
+
+    <div class="sec-head" style="color:var(--sec)">Mixed Batch (Google-style)</div>
+    <div class="card"><div class="card-desc">Multiple different operations in one request. Each item specifies its method and path. Google's batch API uses multipart/mixed; a simpler JSON approach:</div>
+    <pre class="code">POST /batch
+{
+  "operations": [
+    { "method": "POST", "path": "/users",    "body": { "name": "Alice" } },
+    { "method": "PATCH","path": "/users/u_2", "body": { "role": "admin" } },
+    { "method": "DELETE","path": "/users/u_3" }
+  ]
+}</pre></div>
+
+    <div class="sec-head" style="color:var(--tool)">Best Practices</div>
+    <div class="card"><div class="card-title">Cap batch size</div><div class="card-desc">Set a maximum (e.g., 100 items). Return 413 if exceeded. Document the limit.</div></div>
+    <div class="card"><div class="card-title">Per-item errors, not all-or-nothing</div><div class="card-desc">Process all items. Report success/failure per item. Let the client decide how to handle partial failures.</div></div>
+    <div class="card"><div class="card-title">Idempotency</div><div class="card-desc">Accept Idempotency-Key for the entire batch. Or require per-item IDs that serve as natural idempotency keys.</div></div>
+    <div class="card"><div class="card-title">Async for large batches</div><div class="card-desc">If processing takes >30 seconds, return 202 Accepted with a job ID. Let the client poll for results.</div></div>
+  `;
+});
+
+// ── ASYNC APIs ──
+lazyBuild('pat-async',()=>{
+  document.getElementById('pat-async-body').innerHTML=`
+    <div class="sec-head" style="color:var(--amber)">4 Async Patterns</div>
+    <div class="card"><div class="card-desc">Not everything can return in 200ms. Long-running jobs, real-time updates, and event streams need async patterns.</div></div>
+
+    <div class="sec-head" style="color:var(--rest)">1. Polling</div>
+    <div class="card"><div class="card-desc">Client submits a job. Server returns 202 + job URL. Client polls until done.</div>
+    <pre class="code">// Submit
+POST /reports/generate
+{ "type": "annual", "year": 2024 }
+→ 202 Accepted
+{ "job_id": "job_42", "status": "processing",
+  "status_url": "/jobs/job_42" }
+
+// Poll
+GET /jobs/job_42
+→ { "status": "processing", "progress": 45 }
+
+GET /jobs/job_42
+→ { "status": "completed",
+    "result_url": "/reports/rpt_99",
+    "completed_at": "2024-01-01T12:05:00Z" }</pre>
+    <div class="card-when">Use for: report generation, data exports, video processing, ML training</div></div>
+
+    <div class="sec-head" style="color:var(--sec)">2. Webhooks (push)</div>
+    <div class="card"><div class="card-desc">Server pushes events to a consumer-registered URL. See the <strong>Webhooks</strong> guide for full details.</div>
+    <pre class="code">// Register
+POST /webhooks
+{ "url": "https://me.com/hooks", "events": ["job.completed"] }
+
+// When job finishes, server POSTs to your URL:
+POST https://me.com/hooks
+{ "type": "job.completed", "data": { "job_id": "job_42" } }</pre>
+    <div class="card-when">Use for: payment notifications, CI/CD triggers, inventory updates</div></div>
+
+    <div class="sec-head" style="color:var(--grpc)">3. Server-Sent Events (SSE)</div>
+    <div class="card"><div class="card-desc">Server pushes events over a long-lived HTTP connection. Client receives a stream of text events. Simpler than WebSockets — one-directional, works through proxies, auto-reconnects.</div>
+    <pre class="code">// Client
+const es = new EventSource('/jobs/job_42/stream');
+es.onmessage = (e) => {
+  const data = JSON.parse(e.data);
+  console.log(data.progress);  // 10, 25, 50, 75, 100
+};
+
+// Server response (text/event-stream)
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+
+data: {"progress": 10, "status": "processing"}
+
+data: {"progress": 50, "status": "processing"}
+
+data: {"progress": 100, "status": "completed"}</pre>
+    <div class="card-when">Use for: live progress bars, notification feeds, dashboard updates</div></div>
+
+    <div class="sec-head" style="color:var(--gql)">4. WebSockets</div>
+    <div class="card"><div class="card-desc">Full-duplex, persistent connection. Both client and server can send messages at any time. Most complex to implement and operate.</div>
+    <pre class="code">// Client
+const ws = new WebSocket('wss://api.example.com/ws');
+ws.onopen = () => ws.send(JSON.stringify({ subscribe: 'orders' }));
+ws.onmessage = (e) => console.log(JSON.parse(e.data));</pre>
+    <div class="card-when">Use for: chat, collaborative editing, multiplayer games, trading platforms</div></div>
+
+    <div class="sec-head" style="color:var(--tool)">Choosing the Right Pattern</div>
+    <table class="ref-table">
+      <thead><tr><th>Pattern</th><th>Direction</th><th>Complexity</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td>Polling</td><td>Client → Server</td><td>Low</td><td>Infrequent checks, jobs</td></tr>
+        <tr><td>Webhooks</td><td>Server → Client</td><td>Medium</td><td>Event notifications</td></tr>
+        <tr><td>SSE</td><td>Server → Client</td><td>Low</td><td>Live feeds, progress</td></tr>
+        <tr><td>WebSocket</td><td>Bidirectional</td><td>High</td><td>Real-time interactive</td></tr>
+      </tbody>
+    </table>
+  `;
+});
+
+// ── REAL-WORLD EXAMPLES ──
+lazyBuild('pat-realworld',()=>{
+  document.getElementById('pat-realworld-body').innerHTML=`
+    <div class="sec-head" style="color:var(--amber)">Learn from the Best</div>
+    <div class="card"><div class="card-desc">These companies have some of the best-designed public APIs. Here's what makes each one excellent and what you can steal for your own APIs.</div></div>
+
+    <div class="sec-head" style="color:var(--rest)">Stripe — The Gold Standard</div>
+    <div class="card"><div class="card-title">What they do right</div>
+    <div class="card-note"><strong>Idempotency-Key</strong> on every POST — safe retries are a first-class feature<br/><br/><strong>Expand parameter</strong> — GET /charges/ch_1?expand[]=customer&expand[]=invoice — avoids N+1 without GraphQL<br/><br/><strong>Versioning via date</strong> — Stripe-Version: 2024-01-01 — each account pins to its integration date, upgrades at their own pace<br/><br/><strong>Consistent error format</strong> — { type, code, message, param } on every error<br/><br/><strong>Test mode</strong> — sk_test_* keys hit a sandbox. Same API, no real money<br/><br/><strong>Webhook signing</strong> — HMAC-SHA256 with timestamp for replay protection<br/><br/><strong>Pagination</strong> — cursor-based with has_more boolean, starting_after/ending_before params</div></div>
+
+    <div class="sec-head" style="color:var(--grpc)">GitHub — Developer-Friendly REST</div>
+    <div class="card"><div class="card-title">What they do right</div>
+    <div class="card-note"><strong>HATEOAS links</strong> — every response includes _links with URLs to related resources<br/><br/><strong>Conditional requests</strong> — ETag + If-None-Match on every GET. Saves rate limit quota on 304s<br/><br/><strong>Media type versioning</strong> — Accept: application/vnd.github.v3+json<br/><br/><strong>Rich webhooks</strong> — 50+ event types, each well-documented with example payloads<br/><br/><strong>GraphQL API v4</strong> — separate GraphQL API for complex queries, REST API for simple operations<br/><br/><strong>Rate limiting</strong> — clear headers (X-RateLimit-*), higher limits for authenticated users</div></div>
+
+    <div class="sec-head" style="color:var(--gql)">Twilio — API as Product</div>
+    <div class="card"><div class="card-title">What they do right</div>
+    <div class="card-note"><strong>Subresource pattern</strong> — /Accounts/{sid}/Messages/{sid} — clear ownership hierarchy<br/><br/><strong>Content negotiation</strong> — same endpoint returns JSON or XML based on .json/.xml extension<br/><br/><strong>Error codes</strong> — numeric error codes (20003, 21211) with documentation links<br/><br/><strong>Pagination</strong> — page-based with next_page_uri in response<br/><br/><strong>Status callbacks</strong> — webhook URL per-resource, not global — fine-grained control</div></div>
+
+    <div class="sec-head" style="color:var(--sec)">Slack — Events + WebSocket Hybrid</div>
+    <div class="card"><div class="card-title">What they do right</div>
+    <div class="card-note"><strong>Events API</strong> — webhooks with verification challenge for URL registration<br/><br/><strong>Socket Mode</strong> — WebSocket alternative to webhooks for apps behind firewalls<br/><br/><strong>Block Kit</strong> — structured message format that separates content from presentation<br/><br/><strong>Scopes</strong> — granular OAuth scopes (channels:read, chat:write) — never over-permission<br/><br/><strong>Rate limits by tier</strong> — different endpoints have different limits (Tier 1-4), documented per method</div></div>
+
+    <div class="sec-head" style="color:var(--tool)">Patterns to Steal</div>
+    <table class="ref-table">
+      <thead><tr><th>Pattern</th><th>From</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Idempotency-Key</td><td>Stripe</td><td>Client-generated key for safe POST retries</td></tr>
+        <tr><td>Expand parameter</td><td>Stripe</td><td>Inline related resources without N+1</td></tr>
+        <tr><td>Date-based versioning</td><td>Stripe</td><td>Pin to integration date, upgrade when ready</td></tr>
+        <tr><td>Conditional requests</td><td>GitHub</td><td>ETag + 304 to save bandwidth and rate limits</td></tr>
+        <tr><td>HATEOAS links</td><td>GitHub</td><td>Self-documenting responses with next actions</td></tr>
+        <tr><td>Numeric error codes</td><td>Twilio</td><td>Machine-parseable errors with doc links</td></tr>
+        <tr><td>Per-resource callbacks</td><td>Twilio</td><td>Webhook URLs set per object, not globally</td></tr>
+        <tr><td>Granular scopes</td><td>Slack</td><td>Minimal permission per integration</td></tr>
+        <tr><td>Tiered rate limits</td><td>Slack</td><td>Different limits for cheap vs expensive endpoints</td></tr>
+      </tbody>
+    </table>
+  `;
 });
 
 // Deep link support
