@@ -1,0 +1,2676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="CodeLattice — Coding interview prep toolkit. Pattern recognition, visual algorithm guides, approach builder, and interview simulator."/>
+<meta property="og:title" content="CodeLattice — Crack the Coding Interview"/>
+<meta property="og:description" content="Master coding patterns, not just solutions. Visual algorithm guides, guided approach builder, and timed interview simulator."/>
+<meta property="og:type" content="website"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230d0f12'/><text x='16' y='22' text-anchor='middle' font-size='16' font-family='monospace' fill='%2310b981'>⟨⟩</text></svg>"/>
+<title>CodeLattice — Crack the Coding Interview</title>
+<style>
+:root{
+  --bg:#0d0f12;--bg2:#131619;--bg3:#1a1e23;--bg4:#21262d;--bg5:#282e36;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--border3:rgba(255,255,255,0.20);
+  --text:#e8eaed;--text2:#9ba3af;--text3:#4e5663;
+  --accent:#10b981;--ag:rgba(16,185,129,0.14);
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;
+  --font:system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Cascadia Code','Fira Code','Consolas',monospace;
+  --r:7px;--rl:11px;
+  --easy:#4ade80;--easy-bg:rgba(74,222,128,0.10);
+  --med:#fbbf24;--med-bg:rgba(251,191,36,0.10);
+  --hard:#f87171;--hard-bg:rgba(248,113,113,0.10);
+  --pat:#a78bfa;--pat-bg:rgba(167,139,250,0.10);
+  --ds:#38bdf8;--ds-bg:rgba(56,189,248,0.10);
+  --tool:#fb923c;--tool-bg:rgba(251,146,60,0.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;overflow:hidden}
+
+.shell{display:grid;grid-template-columns:220px 1fr;grid-template-rows:46px 1fr;height:100vh}
+.topbar{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:20}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;padding:10px 8px 24px;gap:1px}
+.main{display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+.logo{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:-.03em}
+.logo span{color:var(--accent)}
+.topbar-sub{font-size:10px;color:var(--text3);font-family:var(--mono);letter-spacing:.03em}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.home-btn{font-size:11px;font-family:var(--mono);padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;transition:all .1s}
+.home-btn:hover{background:var(--bg3);color:var(--text)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+/* sidebar */
+.sb-search{margin:0 0 4px;position:relative}
+.sb-search input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:11.5px;padding:6px 9px 6px 26px;outline:none;font-family:var(--font);transition:border-color .15s}
+.sb-search input:focus{border-color:rgba(16,185,129,.4)}
+.sb-search input::placeholder{color:var(--text3)}
+.sb-search-icon{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text3);pointer-events:none}
+.sb-search .sb-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--text3);cursor:pointer;background:none;border:none;padding:2px;display:none;font-family:var(--mono)}
+.sb-search .sb-clear.vis{display:block}
+.ph-label{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;font-family:var(--mono);padding:11px 8px 4px;color:var(--text3);cursor:pointer;user-select:none}
+.ph-label::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ph-label .caret{margin-left:auto;font-size:8px;transition:transform .15s;opacity:.4}
+.ph-label.collapsed .caret{transform:rotate(-90deg)}
+.ph-label.pat::before{background:var(--pat)}.ph-label.pat{color:var(--pat)}
+.ph-label.ds::before{background:var(--ds)}.ph-label.ds{color:var(--ds)}
+.ph-label.tool::before{background:var(--tool)}.ph-label.tool{color:var(--tool)}
+.ph-label.ref::before{background:var(--text3)}.ph-label.ref{color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:var(--r);cursor:pointer;font-size:12.5px;color:var(--text2);transition:all .1s;border:1px solid transparent;user-select:none}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{border-color:rgba(255,255,255,.06)}
+.nav-item.active.pat{background:var(--pat-bg);color:var(--pat)}
+.nav-item.active.ds{background:var(--ds-bg);color:var(--ds)}
+.nav-item.active.tool{background:var(--tool-bg);color:var(--tool)}
+.nav-item.active.ref{background:rgba(148,163,184,.08);color:#94a3b8}
+.nav-item.sb-hidden{display:none}
+.nicon{font-size:12px;width:16px;text-align:center;flex-shrink:0}
+.sdivider{height:1px;background:var(--border);margin:5px 0}
+
+/* views */
+.view{display:none;flex-direction:column;height:100%;overflow:hidden}
+.view.active{display:flex}
+.scroll-view{flex:1;overflow-y:auto;padding:22px 24px 40px}
+
+/* header */
+.tool-hdr{padding:11px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0;flex-wrap:wrap;gap:8px}
+.hdr-badge{font-size:10px;font-family:var(--mono);font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:20px;white-space:nowrap}
+.hdr-badge.pat{background:var(--pat-bg);color:var(--pat)}
+.hdr-badge.ds{background:var(--ds-bg);color:var(--ds)}
+.hdr-badge.tool{background:var(--tool-bg);color:var(--tool)}
+.hdr-badge.ref{background:rgba(148,163,184,.08);color:#94a3b8}
+.htitle{font-size:14px;font-weight:600}
+.hsub{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+
+/* welcome */
+.welcome{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:40px 24px 60px}
+.wlc-hero{text-align:center;margin-bottom:32px}
+.wlc-title{font-size:22px;font-weight:700;margin-bottom:6px;font-family:var(--mono)}
+.wlc-title span{color:var(--accent)}
+.wlc-sub{font-size:13px;color:var(--text3);max-width:420px;margin:0 auto;line-height:1.7}
+.wlc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:560px;width:100%;margin-bottom:12px}
+.wlc-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:18px 16px;cursor:pointer;transition:all .15s;text-align:left;position:relative;overflow:hidden}
+.wlc-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.wlc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.wlc-card.c1::before{background:var(--pat)}.wlc-card.c2::before{background:var(--ds)}
+.wlc-card.c3::before{background:var(--tool)}.wlc-card.c4::before{background:var(--accent)}
+.wlc-card-icon{font-size:20px;margin-bottom:8px}
+.wlc-card-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.wlc-card-desc{font-size:11.5px;color:var(--text2);line-height:1.6}
+.wlc-card-meta{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:8px}
+.wlc-stats{display:flex;gap:20px;justify-content:center;margin-top:24px}
+.wlc-stat{text-align:center}
+.wlc-stat-num{font-size:18px;font-weight:700;font-family:var(--mono);color:var(--text)}
+.wlc-stat-label{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em}
+
+/* pattern cards */
+.sec-head{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);color:var(--text3);margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.sec-head::before{content:'';width:7px;height:7px;border-radius:50%;flex-shrink:0;background:currentColor}
+.pattern-detail{flex:1;overflow-y:auto;padding:24px}
+.pd-header{margin-bottom:20px}
+.pd-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.pd-sub{font-size:12px;color:var(--text3);font-family:var(--mono)}
+.pd-badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.pd-badge{font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:20px}
+.pd-badge.easy{background:var(--easy-bg);color:var(--easy)}.pd-badge.med{background:var(--med-bg);color:var(--med)}.pd-badge.hard{background:var(--hard-bg);color:var(--hard)}
+.pd-section{margin-bottom:20px}
+.pd-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);color:var(--accent);margin-bottom:8px}
+.pd-text{font-size:13px;color:var(--text2);line-height:1.7}
+.pd-signals{display:flex;flex-direction:column;gap:5px}
+.pd-signal{font-size:12px;color:var(--text2);padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);line-height:1.5}
+.pd-signal em{color:var(--accent);font-style:normal;font-weight:500}
+.pd-code{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px;font-family:var(--mono);font-size:12px;line-height:1.8;color:#94a3b8;overflow-x:auto;white-space:pre;tab-size:2}
+.pd-complexity{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pd-cx{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;text-align:center}
+.pd-cx-label{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;margin-bottom:4px}
+.pd-cx-val{font-size:16px;font-weight:700;font-family:var(--mono);color:var(--accent)}
+.pd-problems{display:flex;flex-direction:column;gap:6px}
+.pd-problem{display:flex;align-items:center;gap:8px;font-size:12px;padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);transition:border-color .12s}
+.pd-problem:hover{border-color:var(--border3)}
+.pd-problem .diff{font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:3px;flex-shrink:0}
+.pd-problem .diff.e{background:var(--easy-bg);color:var(--easy)}.pd-problem .diff.m{background:var(--med-bg);color:var(--med)}.pd-problem .diff.h{background:var(--hard-bg);color:var(--hard)}
+.pd-problem .pname{color:var(--text2);flex:1}
+.pd-problem .plinks{display:flex;gap:4px;flex-shrink:0}
+.pd-problem .plink{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:4px;border:1px solid var(--border2);color:var(--text3);cursor:pointer;background:transparent;transition:all .1s;text-decoration:none}
+.pd-problem .plink:hover{border-color:var(--accent);color:var(--accent);background:var(--ag)}
+
+/* DS reference */
+.ds-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:12px}
+.ds-card-title{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.ds-card-desc{font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:10px}
+.ds-ops{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin-bottom:10px}
+.ds-op{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 8px;text-align:center}
+.ds-op-name{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase}
+.ds-op-val{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--accent)}
+.ds-when{font-size:12px;color:var(--text2);line-height:1.6;padding:8px 10px;background:var(--ag);border:1px solid rgba(16,185,129,.15);border-radius:var(--r)}
+
+/* approach builder */
+.approach-layout{display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1;overflow:hidden;min-height:0}
+.approach-form{padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;border-right:1px solid var(--border)}
+.approach-preview{padding:20px;overflow-y:auto;background:var(--bg)}
+.field-group{display:flex;flex-direction:column;gap:5px}
+.field-label{font-size:11px;font-weight:600;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em}
+.cl-input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:13px;padding:8px 11px;outline:none;transition:border-color .15s;width:100%}
+.cl-input:focus{border-color:rgba(16,185,129,.45)}
+.cl-input.ta{resize:vertical;min-height:72px;line-height:1.6}
+.phase-step{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.phase-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--mono);flex-shrink:0;border:1px solid var(--border2);color:var(--text3);background:var(--bg3)}
+.phase-num.active{background:var(--ag);border-color:rgba(16,185,129,.35);color:var(--accent)}
+.phase-title{font-size:12px;font-weight:600}
+.suggest-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.suggest-chip{font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .12s}
+.suggest-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--ag)}
+.suggest-chip.selected{background:var(--ag);border-color:rgba(16,185,129,.35);color:var(--accent)}
+
+/* approach preview */
+.ap-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;font-size:12px;line-height:1.7;color:var(--text2)}
+.ap-card h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);margin:14px 0 5px}
+.ap-card h3:first-child{margin-top:0}
+.ap-card h2{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.ap-empty{color:var(--text3);font-style:italic}
+
+/* interview mode */
+.interview-bar{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.timer{font-size:18px;font-weight:700;font-family:var(--mono);color:var(--accent);min-width:70px}
+.timer.warn{color:var(--amber)}.timer.danger{color:var(--red)}
+.iv-btn{padding:5px 14px;font-size:11.5px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;font-family:var(--mono);transition:all .12s}
+.iv-btn:hover{background:var(--bg4);color:var(--text)}
+.iv-btn.go{background:var(--ag);border-color:rgba(16,185,129,.3);color:var(--accent)}
+.iv-btn.go:hover{background:rgba(16,185,129,.2)}
+.iv-btn.stop{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:var(--red)}
+.iv-prompt{font-size:12px;color:var(--text3);font-family:var(--mono);margin-left:auto}
+.iv-body{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.iv-problem{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:18px}
+.iv-problem h3{font-size:15px;font-weight:600;margin-bottom:8px}
+.iv-problem p{font-size:13px;color:var(--text2);line-height:1.7}
+.iv-checklist{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px}
+.iv-checklist h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);color:var(--accent);margin-bottom:8px}
+.iv-check{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:12px;color:var(--text2);cursor:pointer}
+.iv-check input{margin-top:3px;accent-color:var(--accent)}
+
+/* complexity ref */
+.cx-table{width:100%;border-collapse:collapse;font-size:12px;font-family:var(--mono)}
+.cx-table th{background:var(--bg3);padding:8px 12px;text-align:left;font-weight:600;font-size:11px;color:var(--text2);border:1px solid var(--border)}
+.cx-table td{padding:7px 12px;border:1px solid var(--border);color:var(--text2)}
+.cx-table tr:hover td{background:var(--bg3)}
+.cx-good{color:var(--green)}.cx-ok{color:var(--amber)}.cx-bad{color:var(--red)}
+
+/* filter */
+.filter-bar{display:flex;align-items:center;gap:6px;padding:12px 0 14px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);z-index:5;padding-top:6px}
+.filter-lbl{font-size:10px;font-weight:700;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;margin-right:2px}
+.filter-chip{font-size:11px;font-family:var(--mono);padding:3px 10px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;transition:all .12s;white-space:nowrap}
+.filter-chip:hover{border-color:var(--border3);color:var(--text2)}
+.filter-chip.active{background:var(--ag);border-color:rgba(16,185,129,.3);color:var(--accent)}
+
+/* buttons */
+.tbtn{padding:3px 11px;font-size:11.5px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;font-family:var(--mono);transition:all .1s;white-space:nowrap}
+.tbtn:hover{background:var(--bg4);color:var(--text)}
+.tbtn.go{background:var(--ag);border-color:rgba(16,185,129,.3);color:var(--accent)}
+.tbtn.go:hover{background:rgba(16,185,129,.2)}
+
+/* kbd overlay */
+.kbd-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center}
+
+/* quiz */
+.quiz-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:20px;max-width:600px;margin:0 auto}
+.quiz-problem{font-size:14px;line-height:1.7;color:var(--text2);margin-bottom:16px}
+.quiz-choices{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.quiz-choice{font-size:12px;font-family:var(--mono);padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s}
+.quiz-choice:hover{border-color:var(--accent);color:var(--accent);background:var(--ag)}
+.quiz-choice.selected{background:var(--ag);border-color:rgba(16,185,129,.4);color:var(--accent)}
+.quiz-choice.correct{background:rgba(74,222,128,.12);border-color:var(--green);color:var(--green)}
+.quiz-choice.wrong{background:rgba(248,113,113,.08);border-color:var(--red);color:var(--red)}
+.quiz-choice.missed{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3);color:var(--green);opacity:.7}
+.quiz-result{padding:12px 14px;border-radius:var(--r);font-size:13px;line-height:1.6;margin-bottom:14px}
+.quiz-result.right{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--green)}
+.quiz-result.wrong{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.15);color:var(--text2)}
+.quiz-score{display:flex;align-items:center;gap:16px;padding:14px;background:var(--bg3);border-radius:var(--r);margin-bottom:16px;font-family:var(--mono)}
+.quiz-score-num{font-size:22px;font-weight:700;color:var(--accent)}
+.quiz-score-label{font-size:11px;color:var(--text3)}
+.quiz-progress{font-size:11px;color:var(--text3);font-family:var(--mono)}
+
+/* study plan */
+.sp-week{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:14px}
+.sp-week-hdr{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sp-week-num{font-size:10px;font-family:var(--mono);font-weight:700;padding:3px 10px;border-radius:20px;background:var(--ag);color:var(--accent)}
+.sp-day{padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+.sp-day:last-child{border:none}
+.sp-day-label{font-size:10px;font-family:var(--mono);font-weight:700;color:var(--text3);min-width:48px;padding-top:2px}
+.sp-day-items{display:flex;flex-wrap:wrap;gap:5px}
+.sp-link{font-size:11px;font-family:var(--mono);padding:3px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--text2);cursor:pointer;background:transparent;transition:all .12s}
+.sp-link:hover{border-color:var(--accent);color:var(--accent);background:var(--ag)}
+.sp-link.pat{border-color:rgba(167,139,250,.2);color:var(--pat)}.sp-link.pat:hover{border-color:var(--pat);background:var(--pat-bg)}
+.sp-link.ds{border-color:rgba(56,189,248,.2);color:var(--ds)}.sp-link.ds:hover{border-color:var(--ds);background:var(--ds-bg)}
+.sp-link.ref{border-color:rgba(148,163,184,.15);color:#94a3b8}
+
+/* interview filters */
+.iv-filters{display:flex;gap:6px;flex-wrap:wrap;padding:8px 18px;border-bottom:1px solid var(--border);background:var(--bg2)}
+
+/* connection bar */
+.conn-bar{padding:6px 18px;border-bottom:1px solid var(--border);background:var(--bg);display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;min-height:0;overflow:hidden;transition:all .2s}
+.conn-bar:empty{display:none;padding:0;border:none}
+.conn-lbl{font-size:10px;font-weight:700;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;flex-shrink:0}
+.conn-chip{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--text2);cursor:pointer;background:transparent;transition:all .12s;font-family:var(--mono);white-space:nowrap}
+.conn-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--ag)}
+.conn-chip.prereq{border-color:rgba(251,191,36,.2)}.conn-chip.prereq:hover{border-color:var(--amber);color:var(--amber);background:var(--med-bg)}
+
+/* brute-to-optimal */
+.bto-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:14px;margin-bottom:4px}
+.bto-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.bto-label{font-size:10px;font-family:var(--mono);font-weight:700;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;padding-top:2px;min-width:58px}
+.bto-label.brute{color:var(--red)}.bto-label.optimal{color:var(--green)}.bto-label.why{color:var(--accent)}
+.bto-text{font-size:12px;color:var(--text2);line-height:1.6}
+.kbd-overlay.open{display:flex}
+.kbd-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:24px;max-width:380px;width:90%}
+.kbd-title{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.kbd-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 6px}
+.kbd-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+.kbd-row:last-child{border:none}
+.kbd-action{font-size:12.5px;color:var(--text2)}
+.kbd-keys{display:flex;gap:4px}
+.kbd-key{font-size:11px;font-family:var(--mono);padding:2px 7px;border-radius:4px;background:var(--bg4);border:1px solid var(--border2);color:var(--text)}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- topbar -->
+<header class="topbar">
+  <a href="./index.html" class="home-btn" style="text-decoration:none;margin-right:4px" title="Back to Hub">◇ Hub</a>
+  <span class="logo">Code<span>Lattice</span></span>
+  <span class="topbar-sub">coding interview toolkit</span>
+  <div class="topbar-right">
+    <button class="home-btn" id="home-btn" onclick="showWelcome()" style="display:none">⟨⟩ Home</button>
+    <div class="dot"></div>
+  </div>
+</header>
+
+<!-- sidebar -->
+<nav class="sidebar">
+  <div class="sb-search">
+    <span class="sb-search-icon">⌕</span>
+    <input type="text" id="sb-search" placeholder="Search… (Ctrl+/)" oninput="sbFilter(this.value)"/>
+    <button class="sb-clear" id="sb-clear" onclick="document.getElementById('sb-search').value='';sbFilter('')">✕</button>
+  </div>
+
+  <div class="ph-label pat" onclick="sbToggle(this)">Patterns<span class="caret">▼</span></div>
+  <div class="nav-item pat" onclick="showPattern('two-pointers',this)"><span class="nicon">↔</span>Two Pointers</div>
+  <div class="nav-item pat" onclick="showPattern('sliding-window',this)"><span class="nicon">▭</span>Sliding Window</div>
+  <div class="nav-item pat" onclick="showPattern('fast-slow',this)"><span class="nicon">🐢</span>Fast & Slow</div>
+  <div class="nav-item pat" onclick="showPattern('merge-intervals',this)"><span class="nicon">⊕</span>Merge Intervals</div>
+  <div class="nav-item pat" onclick="showPattern('binary-search',this)"><span class="nicon">◎</span>Binary Search</div>
+  <div class="nav-item pat" onclick="showPattern('bfs',this)"><span class="nicon">⤳</span>BFS</div>
+  <div class="nav-item pat" onclick="showPattern('dfs',this)"><span class="nicon">↧</span>DFS</div>
+  <div class="nav-item pat" onclick="showPattern('backtracking',this)"><span class="nicon">↩</span>Backtracking</div>
+  <div class="nav-item pat" onclick="showPattern('top-k',this)"><span class="nicon">▲</span>Top K / Heap</div>
+  <div class="nav-item pat" onclick="showPattern('two-heaps',this)"><span class="nicon">⋈</span>Two Heaps</div>
+  <div class="nav-item pat" onclick="showPattern('monotonic-stack',this)"><span class="nicon">▤</span>Monotonic Stack</div>
+  <div class="nav-item pat" onclick="showPattern('dp',this)"><span class="nicon">▦</span>Dynamic Programming</div>
+  <div class="nav-item pat" onclick="showPattern('greedy',this)"><span class="nicon">✓</span>Greedy</div>
+  <div class="nav-item pat" onclick="showPattern('topo-sort',this)"><span class="nicon">⇢</span>Topological Sort</div>
+  <div class="nav-item pat" onclick="showPattern('union-find',this)"><span class="nicon">∪</span>Union-Find</div>
+  <div class="nav-item pat" onclick="showPattern('trie',this)"><span class="nicon">🌳</span>Trie</div>
+  <div class="nav-item pat" onclick="showPattern('prefix-sum',this)"><span class="nicon">Σ</span>Prefix Sum</div>
+  <div class="nav-item pat" onclick="showPattern('bit-manipulation',this)"><span class="nicon">⊻</span>Bit Manipulation</div>
+  <div class="nav-item pat" onclick="showPattern('cyclic-sort',this)"><span class="nicon">↻</span>Cyclic Sort</div>
+  <div class="nav-item pat" onclick="showPattern('k-way-merge',this)"><span class="nicon">⇉</span>K-way Merge</div>
+  <div class="nav-item pat" onclick="showPattern('kadanes',this)"><span class="nicon">📈</span>Kadane's Algorithm</div>
+
+  <div class="ph-label ds" onclick="sbToggle(this)">Data Structures<span class="caret">▼</span></div>
+  <div class="nav-item ds" onclick="showDS('array',this)"><span class="nicon">▤</span>Array</div>
+  <div class="nav-item ds" onclick="showDS('hashmap',this)"><span class="nicon">{}</span>HashMap</div>
+  <div class="nav-item ds" onclick="showDS('hashset',this)"><span class="nicon">∅</span>HashSet</div>
+  <div class="nav-item ds" onclick="showDS('stack',this)"><span class="nicon">▥</span>Stack</div>
+  <div class="nav-item ds" onclick="showDS('queue',this)"><span class="nicon">⇥</span>Queue</div>
+  <div class="nav-item ds" onclick="showDS('heap',this)"><span class="nicon">▲</span>Heap</div>
+  <div class="nav-item ds" onclick="showDS('linkedlist',this)"><span class="nicon">⟶</span>Linked List</div>
+  <div class="nav-item ds" onclick="showDS('bintree',this)"><span class="nicon">🌲</span>Binary Tree</div>
+  <div class="nav-item ds" onclick="showDS('bst',this)"><span class="nicon">⋈</span>BST</div>
+  <div class="nav-item ds" onclick="showDS('graph',this)"><span class="nicon">◉</span>Graph</div>
+  <div class="nav-item ds" onclick="showDS('ds-trie',this)"><span class="nicon">🌳</span>Trie</div>
+  <div class="nav-item ds" onclick="showDS('ds-uf',this)"><span class="nicon">∪</span>Union-Find</div>
+  <div class="nav-item ds" onclick="showView('complexity',this)"><span class="nicon">📈</span>Big-O Cheat Sheet</div>
+
+  <div class="sdivider"></div>
+  <div class="ph-label tool" onclick="sbToggle(this)">Tools<span class="caret">▼</span></div>
+  <div class="nav-item tool" onclick="showView('approach',this)"><span class="nicon">🧠</span>Approach Builder</div>
+  <div class="nav-item tool" onclick="showView('interview',this)"><span class="nicon">⏱</span>Interview Simulator</div>
+  <div class="nav-item tool" onclick="showView('quiz',this)"><span class="nicon">🎯</span>Pattern Quiz</div>
+  <div class="nav-item tool" onclick="showView('studyplan',this)"><span class="nicon">📅</span>Study Plan</div>
+
+  <div class="sdivider"></div>
+  <div class="ph-label ref" onclick="sbToggle(this)">Reference<span class="caret">▼</span></div>
+  <div class="nav-item ref" onclick="showView('cheatsheet',this)"><span class="nicon">📋</span>Quick Tips</div>
+  <div class="nav-item ref" onclick="showView('sorting',this)"><span class="nicon">⇅</span>Sorting Algorithms</div>
+  <div class="nav-item ref" onclick="showView('string-ref',this)"><span class="nicon">🔤</span>String Tricks</div>
+  <div class="nav-item ref" onclick="showView('math-ref',this)"><span class="nicon">∑</span>Math & Formulas</div>
+  <div class="nav-item ref" onclick="showView('graph-ref',this)"><span class="nicon">◉</span>Graph Algorithms</div>
+  <div class="nav-item ref" onclick="showView('snippets',this)"><span class="nicon">⟨⟩</span>Code Snippets</div>
+</nav>
+
+<!-- main content -->
+<main class="main">
+
+<!-- WELCOME -->
+<div id="view-welcome" class="view active">
+  <div class="welcome">
+    <div class="wlc-hero">
+      <div class="wlc-title">Code<span>Lattice</span></div>
+      <div class="wlc-sub">Master coding patterns, not just solutions. Build the thinking process that turns a problem statement into working code.</div>
+    </div>
+    <div class="wlc-grid">
+      <div class="wlc-card c1" onclick="showPattern('two-pointers',null)">
+        <div class="wlc-card-icon">🧩</div>
+        <div class="wlc-card-title">Learn a pattern</div>
+        <div class="wlc-card-desc">16 coding patterns with visual explanations, trigger signals, code templates, and practice problems.</div>
+        <div class="wlc-card-meta" id="wlc-m-pat"></div>
+      </div>
+      <div class="wlc-card c2" onclick="showDS('array',null)">
+        <div class="wlc-card-icon">📊</div>
+        <div class="wlc-card-title">Data structures</div>
+        <div class="wlc-card-desc">When to use which DS. Operation complexities, strengths, and the decision tree for picking the right one.</div>
+        <div class="wlc-card-meta" id="wlc-m-ds"></div>
+      </div>
+      <div class="wlc-card c3" onclick="showView('approach',null)">
+        <div class="wlc-card-icon">🧠</div>
+        <div class="wlc-card-title">Solve a problem</div>
+        <div class="wlc-card-desc">Stuck on a problem? The Approach Builder walks you through: understand, classify, pattern-match, plan, code, verify.</div>
+        <div class="wlc-card-meta">6-phase guided thinking</div>
+      </div>
+      <div class="wlc-card c4" onclick="showView('interview',null)">
+        <div class="wlc-card-icon">⏱</div>
+        <div class="wlc-card-title">Practice interviews</div>
+        <div class="wlc-card-desc">Timed interview simulator with random problems, structured thinking prompts, and an edge case checklist.</div>
+        <div class="wlc-card-meta">Timer · Prompts · Checklist</div>
+      </div>
+    </div>
+    <div class="wlc-stats" id="wlc-stats"></div>
+  </div>
+</div>
+
+<!-- PATTERN DETAIL -->
+<div id="view-pattern" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge pat" id="pat-badge">Pattern</span>
+    <div><div class="htitle" id="pat-title">Pattern</div><div class="hsub" id="pat-sub">Description</div></div>
+  </div>
+  <div class="conn-bar" id="pat-conn"></div>
+  <div class="pattern-detail" id="pat-body"></div>
+</div>
+
+<!-- DS DETAIL -->
+<div id="view-ds-ref" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge ds" id="ds-badge">Data Structure</span>
+    <div><div class="htitle" id="ds-title">Data Structure</div><div class="hsub" id="ds-sub">Description</div></div>
+  </div>
+  <div class="pattern-detail" id="ds-body"></div>
+</div>
+
+<!-- COMPLEXITY -->
+<div id="view-complexity" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge ds">Complexity</span>
+    <div><div class="htitle">Big-O Cheat Sheet</div><div class="hsub">Time and space complexity reference</div></div>
+  </div>
+  <div class="scroll-view" id="cx-body"></div>
+</div>
+
+<!-- APPROACH BUILDER -->
+<div id="view-approach" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge tool">Tool</span>
+    <div><div class="htitle">Approach Builder</div><div class="hsub">Guided problem-solving — understand → classify → plan → code → verify</div></div>
+    <div style="margin-left:auto"><button class="tbtn" onclick="resetApproach()">⟳ Reset</button></div>
+  </div>
+  <div class="approach-layout">
+    <div class="approach-form" id="approach-form"></div>
+    <div class="approach-preview" id="approach-preview">
+      <div style="margin:auto;text-align:center;color:var(--text3);font-size:13px;line-height:2.4"><div style="font-size:24px;opacity:.3;margin-bottom:4px">🧠</div>Start describing the problem.<br>Your approach builds here as you think.</div>
+    </div>
+  </div>
+</div>
+
+<!-- INTERVIEW SIMULATOR -->
+<div id="view-interview" class="view">
+  <div class="interview-bar" id="iv-bar">
+    <span class="timer" id="iv-timer">45:00</span>
+    <button class="iv-btn go" id="iv-start" onclick="ivStart()">▶ Start</button>
+    <button class="iv-btn stop" id="iv-stop" onclick="ivStop()" style="display:none">■ Stop</button>
+    <button class="iv-btn" onclick="ivNew()">⟳ New Problem</button>
+    <span class="iv-prompt" id="iv-prompt">Press Start to begin a timed session</span>
+  </div>
+  <div class="iv-filters" id="iv-filters">
+    <span class="filter-lbl">Difficulty:</span>
+    <button class="filter-chip active" onclick="setIvFilter('diff','All',this)">All</button>
+    <button class="filter-chip" onclick="setIvFilter('diff','Easy',this)">Easy</button>
+    <button class="filter-chip" onclick="setIvFilter('diff','Medium',this)">Medium</button>
+    <button class="filter-chip" onclick="setIvFilter('diff','Hard',this)">Hard</button>
+    <span class="filter-lbl" style="margin-left:8px">Pattern:</span>
+    <select class="cl-input" style="width:auto;padding:3px 8px;font-size:11px" id="iv-pat-filter" onchange="ivPatFilter=this.value">
+      <option value="All">All patterns</option>
+    </select>
+  </div>
+  <div class="iv-body" id="iv-body">
+    <div style="margin:auto;text-align:center;color:var(--text3);font-size:13px;line-height:2.4"><div style="font-size:24px;opacity:.3;margin-bottom:4px">⏱</div>Click Start for a random problem<br>with a 45-minute timer.</div>
+  </div>
+</div>
+
+<!-- PATTERN QUIZ -->
+<div id="view-quiz" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge tool">Tool</span>
+    <div><div class="htitle">Pattern Recognition Quiz</div><div class="hsub">Read the problem, guess the pattern — train the skill that matters most</div></div>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="tbtn go" onclick="quizNew()">Next →</button>
+      <button class="tbtn" onclick="quizReset()">⟳ Reset Score</button>
+    </div>
+  </div>
+  <div class="scroll-view" id="quiz-body">
+    <div style="margin:auto;text-align:center;color:var(--text3);font-size:13px;line-height:2.4;padding-top:40px"><div style="font-size:24px;opacity:.3;margin-bottom:4px">🎯</div>Click "Next" to start.<br>Read the problem, pick the pattern.</div>
+  </div>
+</div>
+
+<!-- STUDY PLAN -->
+<div id="view-studyplan" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge tool">Tool</span>
+    <div><div class="htitle">4-Week Study Plan</div><div class="hsub">Structured learning path from fundamentals to advanced patterns</div></div>
+  </div>
+  <div class="scroll-view" id="studyplan-body"></div>
+</div>
+
+<!-- CHEATSHEET -->
+<div id="view-cheatsheet" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge ref">Reference</span>
+    <div><div class="htitle">Quick Tips</div><div class="hsub">Common tricks, edge cases, and interview communication tips</div></div>
+  </div>
+  <div class="scroll-view" id="tips-body"></div>
+</div>
+
+<!-- SORTING -->
+<div id="view-sorting" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge ref">Reference</span>
+    <div><div class="htitle">Sorting Algorithms</div><div class="hsub">When to use which sort — comparison, stability, and trade-offs</div></div>
+  </div>
+  <div class="scroll-view" id="sorting-body"></div>
+</div>
+
+<!-- STRING TRICKS -->
+<div id="view-string-ref" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge ref">Reference</span>
+    <div><div class="htitle">String Tricks</div><div class="hsub">Common string operations, patterns, and gotchas</div></div>
+  </div>
+  <div class="scroll-view" id="string-body"></div>
+</div>
+
+<!-- MATH -->
+<div id="view-math-ref" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge ref">Reference</span>
+    <div><div class="htitle">Math & Formulas</div><div class="hsub">GCD, modular arithmetic, combinatorics, and number theory basics</div></div>
+  </div>
+  <div class="scroll-view" id="math-body"></div>
+</div>
+
+<!-- GRAPH ALGORITHMS -->
+<div id="view-graph-ref" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge ref">Reference</span>
+    <div><div class="htitle">Graph Algorithms</div><div class="hsub">BFS vs DFS, shortest path, cycle detection, and when to use each</div></div>
+  </div>
+  <div class="scroll-view" id="graph-algo-body"></div>
+</div>
+
+<!-- CODE SNIPPETS -->
+<div id="view-snippets" class="view">
+  <div class="tool-hdr">
+    <span class="hdr-badge ref">Reference</span>
+    <div><div class="htitle">Code Snippets</div><div class="hsub">Copy-ready patterns for common interview operations</div></div>
+  </div>
+  <div class="scroll-view" id="snippets-body"></div>
+</div>
+
+</main>
+</div>
+
+<!-- kbd overlay -->
+<div class="kbd-overlay" id="kbd-overlay" onclick="if(event.target===this)closeKbd()">
+  <div class="kbd-box">
+    <div class="kbd-title">Keyboard shortcuts<button class="kbd-close" onclick="closeKbd()">✕</button></div>
+    <div class="kbd-row"><span class="kbd-action">Search sidebar</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span class="kbd-key">/</span></div></div>
+    <div class="kbd-row"><span class="kbd-action">Clear search / close</span><div class="kbd-keys"><span class="kbd-key">Esc</span></div></div>
+    <div class="kbd-row"><span class="kbd-action">Show this help</span><div class="kbd-keys"><span class="kbd-key">?</span></div></div>
+    <div class="kbd-row"><span class="kbd-action">Go home</span><div class="kbd-keys"><span class="kbd-key">Click</span><span class="kbd-key">⟨⟩ Home</span></div></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  PATTERN DATA
+// ═══════════════════════════════════════════════════════════
+const PATTERNS={
+'two-pointers':{
+  title:'Two Pointers',
+  desc:'Use two pointers moving toward each other (or in the same direction) to solve problems on sorted arrays or linked lists in O(n) instead of O(n²).',
+  difficulty:'Easy → Medium',
+  signals:[
+    '"Find a <em>pair</em> in a sorted array that sums to X"',
+    '"Remove duplicates from a <em>sorted</em> array"',
+    '"Is this string a <em>palindrome</em>?"',
+    'Problem involves a <em>sorted array</em> and asks for pairs/triplets',
+    'Brute force would use <em>nested loops</em> on a sorted input',
+  ],
+  when:'The input is sorted (or can be sorted) and you need to find pairs, triplets, or subarrays that meet a condition. Two pointers reduce O(n²) nested loops to O(n).',
+  template:`function twoPointers(arr, target) {
+  let left = 0, right = arr.length - 1;
+  
+  while (left < right) {
+    const sum = arr[left] + arr[right];
+    
+    if (sum === target) {
+      return [left, right]; // found
+    } else if (sum < target) {
+      left++;   // need bigger sum
+    } else {
+      right--;  // need smaller sum
+    }
+  }
+  return [-1, -1]; // not found
+}`,
+  timeComplexity:'O(n)',
+  spaceComplexity:'O(1)',
+  problems:[
+    {name:'Two Sum II (Sorted)',diff:'e',id:'167'},
+    {name:'3Sum',diff:'m',id:'15'},
+    {name:'Container With Most Water',diff:'m',id:'11'},
+    {name:'Valid Palindrome',diff:'e',id:'125'},
+    {name:'Trapping Rain Water',diff:'h',id:'42'},
+  ],
+},
+'sliding-window':{
+  title:'Sliding Window',
+  desc:'Maintain a window of elements that expands or shrinks as you traverse an array or string. Turns O(n×k) brute force into O(n) by reusing computation from the previous window position.',
+  difficulty:'Medium',
+  signals:[
+    '"Find the <em>longest substring</em> with at most K distinct characters"',
+    '"Find the <em>maximum sum subarray</em> of size K"',
+    '"<em>Smallest subarray</em> with sum greater than X"',
+    'Problem asks for contiguous subarray/substring with a <em>constraint</em>',
+    'Brute force checks <em>all subarrays</em> — O(n²) or O(n×k)',
+  ],
+  when:'The problem involves contiguous subarrays or substrings and asks for an optimal (longest, shortest, maximum) one that satisfies a condition.',
+  template:`function slidingWindow(arr, k) {
+  let windowStart = 0, windowSum = 0, maxSum = 0;
+  
+  for (let windowEnd = 0; windowEnd < arr.length; windowEnd++) {
+    windowSum += arr[windowEnd]; // expand window
+    
+    if (windowEnd >= k - 1) {
+      maxSum = Math.max(maxSum, windowSum);
+      windowSum -= arr[windowStart]; // shrink window
+      windowStart++;
+    }
+  }
+  return maxSum;
+}
+
+// Variable-size window:
+function longestSubstring(s, k) {
+  let start = 0, maxLen = 0;
+  const freq = {};
+  
+  for (let end = 0; end < s.length; end++) {
+    freq[s[end]] = (freq[s[end]] || 0) + 1;
+    
+    while (Object.keys(freq).length > k) {
+      freq[s[start]]--;
+      if (freq[s[start]] === 0) delete freq[s[start]];
+      start++;
+    }
+    maxLen = Math.max(maxLen, end - start + 1);
+  }
+  return maxLen;
+}`,
+  timeComplexity:'O(n)',
+  spaceComplexity:'O(k)',
+  problems:[
+    {name:'Maximum Sum Subarray of Size K',diff:'e',id:'--'},
+    {name:'Longest Substring Without Repeating Characters',diff:'m',id:'3'},
+    {name:'Minimum Window Substring',diff:'h',id:'76'},
+    {name:'Fruit Into Baskets',diff:'m',id:'904'},
+    {name:'Permutation in String',diff:'m',id:'567'},
+  ],
+},
+'fast-slow':{
+  title:'Fast & Slow Pointers',
+  desc:'Two pointers moving at different speeds through a linked list or array. The fast pointer moves 2x the speed of the slow pointer. When they meet, you\'ve found a cycle or the middle.',
+  difficulty:'Easy → Medium',
+  signals:[
+    '"Detect a <em>cycle</em> in a linked list"',
+    '"Find the <em>middle</em> of a linked list"',
+    '"Find the <em>start of the cycle</em>"',
+    '"Determine if a number is a <em>happy number</em>"',
+    'Problem involves linked list <em>cycle detection</em>',
+  ],
+  when:'You need to detect a cycle, find the middle of a sequence, or determine if a sequence converges. The fast pointer eventually laps the slow pointer if there\'s a cycle.',
+  template:`function hasCycle(head) {
+  let slow = head, fast = head;
+  
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if (slow === fast) return true; // cycle
+  }
+  return false;
+}
+
+function findMiddle(head) {
+  let slow = head, fast = head;
+  
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+  return slow; // middle node
+}`,
+  timeComplexity:'O(n)',
+  spaceComplexity:'O(1)',
+  problems:[
+    {name:'Linked List Cycle',diff:'e',id:'141'},
+    {name:'Middle of the Linked List',diff:'e',id:'876'},
+    {name:'Linked List Cycle II (Find Start)',diff:'m',id:'142'},
+    {name:'Happy Number',diff:'e',id:'202'},
+    {name:'Palindrome Linked List',diff:'m',id:'234'},
+  ],
+},
+'merge-intervals':{
+  title:'Merge Intervals',
+  desc:'Sort intervals by start time, then merge overlapping ones by comparing each interval\'s start with the previous interval\'s end. Handles scheduling, calendar, and range problems.',
+  difficulty:'Medium',
+  signals:[
+    '"<em>Merge overlapping</em> intervals"',
+    '"Find <em>free time</em> between meetings"',
+    '"Insert a new <em>interval</em> into a sorted list"',
+    'Problem involves <em>ranges, schedules, or time slots</em>',
+  ],
+  when:'The problem involves intervals (start, end pairs) and asks you to merge, insert, find gaps, or count overlaps.',
+  template:`function mergeIntervals(intervals) {
+  intervals.sort((a, b) => a[0] - b[0]);
+  const merged = [intervals[0]];
+  
+  for (let i = 1; i < intervals.length; i++) {
+    const last = merged[merged.length - 1];
+    const curr = intervals[i];
+    
+    if (curr[0] <= last[1]) {
+      last[1] = Math.max(last[1], curr[1]); // merge
+    } else {
+      merged.push(curr); // no overlap
+    }
+  }
+  return merged;
+}`,
+  timeComplexity:'O(n log n)',
+  spaceComplexity:'O(n)',
+  problems:[
+    {name:'Merge Intervals',diff:'m',id:'56'},
+    {name:'Insert Interval',diff:'m',id:'57'},
+    {name:'Non-overlapping Intervals',diff:'m',id:'435'},
+    {name:'Meeting Rooms II',diff:'m',id:'253'},
+  ],
+},
+'binary-search':{
+  title:'Modified Binary Search',
+  desc:'Apply binary search beyond simple sorted arrays — on rotated arrays, matrices, or answer spaces. The key insight: if you can define a condition that\'s monotonically true/false, you can binary search on it.',
+  difficulty:'Medium → Hard',
+  signals:[
+    '"Search in a <em>rotated sorted</em> array"',
+    '"Find the <em>minimum</em> in a rotated array"',
+    '"Find the <em>peak element</em>"',
+    '"<em>Sorted</em> + find specific element or boundary"',
+    '"Minimize the <em>maximum</em>" or "maximize the <em>minimum</em>"',
+  ],
+  when:'Input is sorted (or partially sorted), or you\'re searching for a boundary in an answer space. If you can split the problem into "yes" and "no" halves, binary search applies.',
+  template:`function binarySearch(arr, target) {
+  let lo = 0, hi = arr.length - 1;
+  
+  while (lo <= hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    
+    if (arr[mid] === target) return mid;
+    else if (arr[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+
+// Binary search on answer space:
+function minMax(arr, k) {
+  let lo = Math.max(...arr), hi = arr.reduce((a,b) => a+b);
+  
+  while (lo < hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (canSplit(arr, mid, k)) hi = mid;
+    else lo = mid + 1;
+  }
+  return lo;
+}`,
+  timeComplexity:'O(log n)',
+  spaceComplexity:'O(1)',
+  problems:[
+    {name:'Binary Search',diff:'e',id:'704'},
+    {name:'Search in Rotated Sorted Array',diff:'m',id:'33'},
+    {name:'Find Minimum in Rotated Sorted Array',diff:'m',id:'153'},
+    {name:'Find Peak Element',diff:'m',id:'162'},
+    {name:'Median of Two Sorted Arrays',diff:'h',id:'4'},
+  ],
+},
+'bfs':{
+  title:'Breadth-First Search',
+  desc:'Explore level by level using a queue. BFS finds the shortest path in unweighted graphs and processes nodes in order of distance from the start.',
+  difficulty:'Medium',
+  signals:[
+    '"Find the <em>shortest path</em> in an unweighted graph"',
+    '"<em>Level-order</em> traversal of a tree"',
+    '"Find all nodes at <em>distance K</em>"',
+    '"<em>Minimum steps</em> to reach a target"',
+    'Problem involves <em>layers, levels, or shortest distance</em>',
+  ],
+  when:'You need shortest path in unweighted graphs, level-order processing, or minimum number of steps to reach a state.',
+  template:`function bfs(graph, start) {
+  const queue = [start];
+  const visited = new Set([start]);
+  let level = 0;
+  
+  while (queue.length) {
+    const size = queue.length; // nodes at this level
+    
+    for (let i = 0; i < size; i++) {
+      const node = queue.shift();
+      // process node
+      
+      for (const neighbor of graph[node]) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          queue.push(neighbor);
+        }
+      }
+    }
+    level++;
+  }
+}`,
+  timeComplexity:'O(V + E)',
+  spaceComplexity:'O(V)',
+  problems:[
+    {name:'Binary Tree Level Order Traversal',diff:'m',id:'102'},
+    {name:'Rotting Oranges',diff:'m',id:'994'},
+    {name:'Word Ladder',diff:'h',id:'127'},
+    {name:'01 Matrix',diff:'m',id:'542'},
+    {name:'Shortest Path in Binary Matrix',diff:'m',id:'1091'},
+  ],
+},
+'dfs':{
+  title:'Depth-First Search',
+  desc:'Explore as deep as possible before backtracking. Use a stack (or recursion). DFS is the foundation for tree traversals, path finding, connected components, and cycle detection.',
+  difficulty:'Medium',
+  signals:[
+    '"Find <em>all paths</em> from root to leaf"',
+    '"Check if a path <em>exists</em>"',
+    '"Count <em>connected components</em>"',
+    '"<em>Validate</em> a binary search tree"',
+    'Problem involves <em>trees, graphs, or exhaustive search</em>',
+  ],
+  when:'You need to explore all paths, find connected components, detect cycles, or perform tree traversals (preorder, inorder, postorder).',
+  template:`function dfs(node, target) {
+  if (!node) return false;
+  if (node.val === target) return true;
+  
+  return dfs(node.left, target) || dfs(node.right, target);
+}
+
+// Graph DFS:
+function dfsGraph(graph, node, visited = new Set()) {
+  visited.add(node);
+  // process node
+  
+  for (const neighbor of graph[node]) {
+    if (!visited.has(neighbor)) {
+      dfsGraph(graph, neighbor, visited);
+    }
+  }
+}
+
+// Iterative with stack:
+function dfsIterative(root) {
+  const stack = [root];
+  while (stack.length) {
+    const node = stack.pop();
+    // process node
+    if (node.right) stack.push(node.right);
+    if (node.left) stack.push(node.left);
+  }
+}`,
+  timeComplexity:'O(V + E)',
+  spaceComplexity:'O(V)',
+  problems:[
+    {name:'Number of Islands',diff:'m',id:'200'},
+    {name:'Max Depth of Binary Tree',diff:'e',id:'104'},
+    {name:'Path Sum',diff:'e',id:'112'},
+    {name:'Clone Graph',diff:'m',id:'133'},
+    {name:'Course Schedule',diff:'m',id:'207'},
+  ],
+},
+'backtracking':{
+  title:'Backtracking / Subsets',
+  desc:'Build solutions incrementally, abandoning a path as soon as it can\'t lead to a valid solution. The template: choose, explore, unchoose. Generates all permutations, combinations, or subsets.',
+  difficulty:'Medium → Hard',
+  signals:[
+    '"Find <em>all combinations</em> that sum to target"',
+    '"Generate all <em>permutations</em>"',
+    '"Find all <em>subsets</em>"',
+    '"Solve a <em>Sudoku</em> / N-Queens"',
+    '"Generate all valid <em>parentheses</em>"',
+  ],
+  when:'The problem asks for ALL possible solutions, combinations, permutations, or subsets. If it says "find all..." or "generate all...", think backtracking.',
+  template:`function backtrack(result, current, choices, start) {
+  // Base case: found a valid solution
+  if (isComplete(current)) {
+    result.push([...current]);
+    return;
+  }
+  
+  for (let i = start; i < choices.length; i++) {
+    // Choose
+    current.push(choices[i]);
+    
+    // Explore (recurse)
+    backtrack(result, current, choices, i + 1);
+    
+    // Unchoose (backtrack)
+    current.pop();
+  }
+}
+
+// Subsets:
+function subsets(nums) {
+  const result = [];
+  function bt(start, current) {
+    result.push([...current]);
+    for (let i = start; i < nums.length; i++) {
+      current.push(nums[i]);
+      bt(i + 1, current);
+      current.pop();
+    }
+  }
+  bt(0, []);
+  return result;
+}`,
+  timeComplexity:'O(2^n) or O(n!)',
+  spaceComplexity:'O(n)',
+  problems:[
+    {name:'Subsets',diff:'m',id:'78'},
+    {name:'Permutations',diff:'m',id:'46'},
+    {name:'Combination Sum',diff:'m',id:'39'},
+    {name:'Generate Parentheses',diff:'m',id:'22'},
+    {name:'N-Queens',diff:'h',id:'51'},
+  ],
+},
+'top-k':{
+  title:'Top K Elements / Heap',
+  desc:'Use a min-heap of size K to efficiently find the K largest/smallest/most frequent elements. Instead of sorting the entire input (O(n log n)), maintain only K elements (O(n log k)).',
+  difficulty:'Medium',
+  signals:[
+    '"Find the <em>K largest</em> elements"',
+    '"Find the <em>Kth smallest</em> element"',
+    '"Find the <em>K most frequent</em> elements"',
+    '"<em>Sort a nearly sorted</em> array"',
+    'Problem involves K + largest/smallest/frequent',
+  ],
+  when:'Whenever K appears with "largest", "smallest", "closest", or "most frequent". A heap keeps the running top-K efficiently.',
+  template:`// Using a min-heap for K largest:
+function topK(nums, k) {
+  const minHeap = new MinPriorityQueue();
+  
+  for (const num of nums) {
+    minHeap.enqueue(num);
+    if (minHeap.size() > k) {
+      minHeap.dequeue(); // remove smallest
+    }
+  }
+  return minHeap.toArray();
+}
+
+// K most frequent:
+function topKFrequent(nums, k) {
+  const freq = {};
+  for (const n of nums) freq[n] = (freq[n] || 0) + 1;
+  
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, k)
+    .map(e => +e[0]);
+}`,
+  timeComplexity:'O(n log k)',
+  spaceComplexity:'O(k)',
+  problems:[
+    {name:'Kth Largest Element in Array',diff:'m',id:'215'},
+    {name:'Top K Frequent Elements',diff:'m',id:'347'},
+    {name:'K Closest Points to Origin',diff:'m',id:'973'},
+    {name:'Sort Characters By Frequency',diff:'m',id:'451'},
+    {name:'Find Median from Data Stream',diff:'h',id:'295'},
+  ],
+},
+'two-heaps':{
+  title:'Two Heaps',
+  desc:'Maintain a max-heap for the lower half and a min-heap for the upper half. The median is always at the top of one or both heaps. Use when you need the median of a running stream.',
+  difficulty:'Hard',
+  signals:[
+    '"Find the <em>median</em> of a number stream"',
+    '"Find the <em>median</em> of a sliding window"',
+    'Problem involves a <em>stream</em> + median/middle value',
+  ],
+  when:'You need the median of a dynamic dataset that keeps growing or changing. Two heaps give O(log n) insert and O(1) median lookup.',
+  template:`class MedianFinder {
+  constructor() {
+    this.maxHeap = new MaxPriorityQueue(); // lower half
+    this.minHeap = new MinPriorityQueue(); // upper half
+  }
+  
+  addNum(num) {
+    this.maxHeap.enqueue(num);
+    this.minHeap.enqueue(this.maxHeap.dequeue().element);
+    
+    // Balance: maxHeap can have at most 1 more than minHeap
+    if (this.maxHeap.size() < this.minHeap.size()) {
+      this.maxHeap.enqueue(this.minHeap.dequeue().element);
+    }
+  }
+  
+  findMedian() {
+    if (this.maxHeap.size() > this.minHeap.size()) {
+      return this.maxHeap.front().element;
+    }
+    return (this.maxHeap.front().element + this.minHeap.front().element) / 2;
+  }
+}`,
+  timeComplexity:'O(log n) insert',
+  spaceComplexity:'O(n)',
+  problems:[
+    {name:'Find Median from Data Stream',diff:'h',id:'295'},
+    {name:'Sliding Window Median',diff:'h',id:'480'},
+    {name:'IPO',diff:'h',id:'502'},
+  ],
+},
+'monotonic-stack':{
+  title:'Monotonic Stack',
+  desc:'Maintain a stack that\'s always sorted (increasing or decreasing). When a new element violates the order, pop elements until the order is restored. Solves "next greater/smaller element" problems in O(n).',
+  difficulty:'Medium → Hard',
+  signals:[
+    '"Find the <em>next greater element</em>"',
+    '"Find the <em>next smaller element</em>"',
+    '"Calculate the <em>largest rectangle</em> in a histogram"',
+    '"<em>Stock span</em> problem"',
+    '"For each element, find the nearest <em>larger/smaller</em> one"',
+  ],
+  when:'You need to find the next/previous greater or smaller element for each position. The brute force is O(n²) nested loops; monotonic stack does it in O(n).',
+  template:`function nextGreater(nums) {
+  const result = new Array(nums.length).fill(-1);
+  const stack = []; // stores indices
+  
+  for (let i = 0; i < nums.length; i++) {
+    while (stack.length && nums[i] > nums[stack[stack.length - 1]]) {
+      const idx = stack.pop();
+      result[idx] = nums[i];
+    }
+    stack.push(i);
+  }
+  return result;
+}`,
+  timeComplexity:'O(n)',
+  spaceComplexity:'O(n)',
+  problems:[
+    {name:'Next Greater Element I',diff:'e',id:'496'},
+    {name:'Daily Temperatures',diff:'m',id:'739'},
+    {name:'Largest Rectangle in Histogram',diff:'h',id:'84'},
+    {name:'Trapping Rain Water',diff:'h',id:'42'},
+  ],
+},
+'dp':{
+  title:'Dynamic Programming',
+  desc:'Break a problem into overlapping subproblems and store results to avoid recomputation. Two approaches: top-down (memoization with recursion) or bottom-up (tabulation with iteration).',
+  difficulty:'Medium → Hard',
+  signals:[
+    '"Find the <em>minimum/maximum</em> cost/path/sum"',
+    '"How many <em>ways</em> to reach the target?"',
+    '"Is it <em>possible</em> to...?" (with overlapping choices)',
+    '"<em>Longest</em> increasing subsequence / common subsequence"',
+    'Problem has <em>optimal substructure</em> + overlapping subproblems',
+  ],
+  when:'The problem asks for optimization (min/max) or counting (how many ways) AND the solution can be built from solutions to smaller subproblems AND those subproblems overlap.',
+  template:`// Top-down (memoization):
+function dpMemo(n, memo = {}) {
+  if (n in memo) return memo[n];
+  if (n <= 1) return n;
+  
+  memo[n] = dpMemo(n - 1, memo) + dpMemo(n - 2, memo);
+  return memo[n];
+}
+
+// Bottom-up (tabulation):
+function dpTab(n) {
+  const dp = new Array(n + 1).fill(0);
+  dp[1] = 1;
+  
+  for (let i = 2; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2];
+  }
+  return dp[n];
+}
+
+// 2D DP template (e.g., knapsack):
+function knapsack(weights, values, capacity) {
+  const n = weights.length;
+  const dp = Array.from({length: n + 1}, () => 
+    new Array(capacity + 1).fill(0)
+  );
+  
+  for (let i = 1; i <= n; i++) {
+    for (let w = 0; w <= capacity; w++) {
+      dp[i][w] = dp[i-1][w]; // don't take
+      if (weights[i-1] <= w) {
+        dp[i][w] = Math.max(dp[i][w], 
+          dp[i-1][w - weights[i-1]] + values[i-1]); // take
+      }
+    }
+  }
+  return dp[n][capacity];
+}`,
+  timeComplexity:'O(n × m) varies',
+  spaceComplexity:'O(n × m) varies',
+  problems:[
+    {name:'Climbing Stairs',diff:'e',id:'70'},
+    {name:'Coin Change',diff:'m',id:'322'},
+    {name:'Longest Increasing Subsequence',diff:'m',id:'300'},
+    {name:'Longest Common Subsequence',diff:'m',id:'1143'},
+    {name:'Edit Distance',diff:'h',id:'72'},
+  ],
+},
+'greedy':{
+  title:'Greedy',
+  desc:'Make the locally optimal choice at each step, hoping it leads to a globally optimal solution. Only works when the problem has the "greedy choice property" — a local optimum leads to a global optimum.',
+  difficulty:'Medium',
+  signals:[
+    '"Find the <em>minimum number</em> of coins/steps/jumps"',
+    '"Schedule <em>maximum</em> non-overlapping events"',
+    '"<em>Jump game</em> — can you reach the end?"',
+    'Problem involves <em>scheduling or interval selection</em>',
+    'Sorting + taking the best option at each step seems to <em>work</em>',
+  ],
+  when:'When a locally optimal choice at each step produces a globally optimal result. Often involves sorting first. If you\'re not sure greedy works, try a few examples — if a counterexample exists, use DP instead.',
+  template:`// Activity selection:
+function maxEvents(events) {
+  events.sort((a, b) => a[1] - b[1]); // sort by end
+  let count = 0, lastEnd = -Infinity;
+  
+  for (const [start, end] of events) {
+    if (start >= lastEnd) {
+      count++;
+      lastEnd = end;
+    }
+  }
+  return count;
+}
+
+// Jump game:
+function canJump(nums) {
+  let maxReach = 0;
+  
+  for (let i = 0; i < nums.length; i++) {
+    if (i > maxReach) return false;
+    maxReach = Math.max(maxReach, i + nums[i]);
+  }
+  return true;
+}`,
+  timeComplexity:'O(n log n) with sort',
+  spaceComplexity:'O(1)',
+  problems:[
+    {name:'Jump Game',diff:'m',id:'55'},
+    {name:'Jump Game II',diff:'m',id:'45'},
+    {name:'Task Scheduler',diff:'m',id:'621'},
+    {name:'Non-overlapping Intervals',diff:'m',id:'435'},
+    {name:'Gas Station',diff:'m',id:'134'},
+  ],
+},
+'topo-sort':{
+  title:'Topological Sort',
+  desc:'Order nodes in a directed acyclic graph (DAG) so that every edge goes from earlier to later. Use BFS (Kahn\'s algorithm) or DFS. Essential for dependency resolution.',
+  difficulty:'Medium → Hard',
+  signals:[
+    '"Find a valid <em>ordering</em> of tasks with prerequisites"',
+    '"<em>Course schedule</em> — can you finish all courses?"',
+    '"<em>Build order</em> for projects with dependencies"',
+    'Problem involves <em>directed graph + ordering</em>',
+  ],
+  when:'You need to order items with dependencies (prerequisites). If a valid ordering is impossible, the graph has a cycle.',
+  template:`// Kahn's algorithm (BFS):
+function topoSort(numNodes, edges) {
+  const inDegree = new Array(numNodes).fill(0);
+  const graph = Array.from({length: numNodes}, () => []);
+  
+  for (const [from, to] of edges) {
+    graph[from].push(to);
+    inDegree[to]++;
+  }
+  
+  const queue = [];
+  for (let i = 0; i < numNodes; i++) {
+    if (inDegree[i] === 0) queue.push(i);
+  }
+  
+  const order = [];
+  while (queue.length) {
+    const node = queue.shift();
+    order.push(node);
+    
+    for (const neighbor of graph[node]) {
+      inDegree[neighbor]--;
+      if (inDegree[neighbor] === 0) queue.push(neighbor);
+    }
+  }
+  
+  return order.length === numNodes ? order : []; // empty = cycle
+}`,
+  timeComplexity:'O(V + E)',
+  spaceComplexity:'O(V + E)',
+  problems:[
+    {name:'Course Schedule',diff:'m',id:'207'},
+    {name:'Course Schedule II',diff:'m',id:'210'},
+    {name:'Alien Dictionary',diff:'h',id:'269'},
+    {name:'Minimum Height Trees',diff:'m',id:'310'},
+  ],
+},
+'union-find':{
+  title:'Union-Find (Disjoint Set)',
+  desc:'Track connected components efficiently. Two operations: Find (which group is this element in?) and Union (merge two groups). With path compression and rank, both are nearly O(1).',
+  difficulty:'Medium → Hard',
+  signals:[
+    '"Find the number of <em>connected components</em>"',
+    '"Are these two nodes <em>connected</em>?"',
+    '"<em>Redundant connection</em> — find the extra edge"',
+    'Problem involves <em>grouping/connecting</em> elements dynamically',
+  ],
+  when:'You need to dynamically track and merge groups of elements. Faster than BFS/DFS when you have many union and find queries.',
+  template:`class UnionFind {
+  constructor(n) {
+    this.parent = Array.from({length: n}, (_, i) => i);
+    this.rank = new Array(n).fill(0);
+    this.components = n;
+  }
+  
+  find(x) {
+    if (this.parent[x] !== x) {
+      this.parent[x] = this.find(this.parent[x]); // path compression
+    }
+    return this.parent[x];
+  }
+  
+  union(x, y) {
+    const px = this.find(x), py = this.find(y);
+    if (px === py) return false; // already connected
+    
+    // Union by rank
+    if (this.rank[px] < this.rank[py]) this.parent[px] = py;
+    else if (this.rank[px] > this.rank[py]) this.parent[py] = px;
+    else { this.parent[py] = px; this.rank[px]++; }
+    
+    this.components--;
+    return true;
+  }
+}`,
+  timeComplexity:'O(α(n)) ≈ O(1)',
+  spaceComplexity:'O(n)',
+  problems:[
+    {name:'Number of Connected Components',diff:'m',id:'323'},
+    {name:'Redundant Connection',diff:'m',id:'684'},
+    {name:'Accounts Merge',diff:'m',id:'721'},
+    {name:'Number of Islands (UF approach)',diff:'m',id:'200'},
+  ],
+},
+'trie':{
+  title:'Trie (Prefix Tree)',
+  desc:'A tree where each node represents a character. Paths from root to nodes represent prefixes. Enables O(L) lookup, insert, and prefix search where L is the word length — faster than hash for prefix queries.',
+  difficulty:'Medium',
+  signals:[
+    '"<em>Autocomplete</em> suggestions"',
+    '"Find all words with a given <em>prefix</em>"',
+    '"<em>Word search</em> in a grid"',
+    '"Implement a <em>spell checker</em>"',
+    'Problem involves <em>prefix matching</em> across many words',
+  ],
+  when:'You need prefix-based operations on a set of strings: search by prefix, autocomplete, or word search. A HashMap gives O(1) exact lookup but can\'t do prefix queries efficiently.',
+  template:`class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEnd = false;
+  }
+}
+
+class Trie {
+  constructor() { this.root = new TrieNode(); }
+  
+  insert(word) {
+    let node = this.root;
+    for (const ch of word) {
+      if (!node.children[ch]) node.children[ch] = new TrieNode();
+      node = node.children[ch];
+    }
+    node.isEnd = true;
+  }
+  
+  search(word) {
+    let node = this.root;
+    for (const ch of word) {
+      if (!node.children[ch]) return false;
+      node = node.children[ch];
+    }
+    return node.isEnd;
+  }
+  
+  startsWith(prefix) {
+    let node = this.root;
+    for (const ch of prefix) {
+      if (!node.children[ch]) return false;
+      node = node.children[ch];
+    }
+    return true;
+  }
+}`,
+  timeComplexity:'O(L) per operation',
+  spaceComplexity:'O(n × L)',
+  problems:[
+    {name:'Implement Trie',diff:'m',id:'208'},
+    {name:'Word Search II',diff:'h',id:'212'},
+    {name:'Design Add and Search Words',diff:'m',id:'211'},
+    {name:'Replace Words',diff:'m',id:'648'},
+  ],
+},
+'prefix-sum':{
+  title:'Prefix Sum',
+  desc:'Precompute cumulative sums so any range sum query is O(1). Build a prefix array where prefix[i] = sum of elements from index 0 to i. Range sum from i to j = prefix[j] - prefix[i-1].',
+  difficulty:'Easy → Medium',
+  signals:[
+    '"Find the <em>subarray sum</em> equals K"',
+    '"<em>Range sum</em> query"',
+    '"<em>Product of array</em> except self"',
+    '"<em>Contiguous subarray</em> with given sum"',
+    'Problem involves <em>cumulative sums</em> or range calculations',
+  ],
+  when:'The problem asks for sums of subarrays or ranges repeatedly. Instead of recalculating from scratch each time (O(n) per query), precompute prefix sums once and answer each query in O(1).',
+  template:`// Build prefix sum array:
+function buildPrefix(nums) {
+  const prefix = [0]; // prefix[0] = 0 for easier math
+  for (let i = 0; i < nums.length; i++) {
+    prefix.push(prefix[i] + nums[i]);
+  }
+  return prefix;
+  // rangeSum(i, j) = prefix[j+1] - prefix[i]
+}
+
+// Subarray sum equals K (using HashMap):
+function subarraySum(nums, k) {
+  const prefixCount = {0: 1};
+  let sum = 0, count = 0;
+  
+  for (const num of nums) {
+    sum += num;
+    // If (sum - k) was a previous prefix sum,
+    // then the subarray between them sums to k
+    if (prefixCount[sum - k]) {
+      count += prefixCount[sum - k];
+    }
+    prefixCount[sum] = (prefixCount[sum] || 0) + 1;
+  }
+  return count;
+}`,
+  timeComplexity:'O(n) build, O(1) query',
+  spaceComplexity:'O(n)',
+  problems:[
+    {name:'Subarray Sum Equals K',diff:'m',id:'560'},
+    {name:'Range Sum Query - Immutable',diff:'e',id:'303'},
+    {name:'Product of Array Except Self',diff:'m',id:'238'},
+    {name:'Contiguous Array',diff:'m',id:'525'},
+    {name:'Find Pivot Index',diff:'e',id:'724'},
+  ],
+},
+'bit-manipulation':{
+  title:'Bit Manipulation',
+  desc:'Use bitwise operators (AND, OR, XOR, SHIFT) to solve problems in O(1) space. XOR is the star: a^a=0, a^0=a. This finds the unique element without extra storage.',
+  difficulty:'Easy → Medium',
+  signals:[
+    '"Find the <em>single number</em> that appears once"',
+    '"<em>Power of two</em>?"',
+    '"<em>Count the number of 1 bits</em>"',
+    '"Without using <em>extra space</em> or multiplication/division"',
+    'Problem mentions <em>bits, binary, XOR</em>, or O(1) space constraint',
+  ],
+  when:'The problem involves finding unique elements, powers of two, counting bits, or requires O(1) space where others would use a HashMap. XOR tricks are the most common: XOR all elements to find the one that doesn\'t pair up.',
+  template:`// Single number (XOR all — pairs cancel out):
+function singleNumber(nums) {
+  let result = 0;
+  for (const num of nums) {
+    result ^= num; // a ^ a = 0, so duplicates cancel
+  }
+  return result; // only the unique number remains
+}
+
+// Check if power of two:
+function isPowerOfTwo(n) {
+  return n > 0 && (n & (n - 1)) === 0;
+  // Powers of 2 have exactly one bit set
+  // n & (n-1) clears the lowest set bit
+}
+
+// Count set bits (Hamming weight):
+function hammingWeight(n) {
+  let count = 0;
+  while (n) {
+    count++;
+    n &= (n - 1); // clear lowest set bit
+  }
+  return count;
+}
+
+// Common bit tricks:
+// n & 1         — check if odd
+// n >> 1        — divide by 2
+// n << 1        — multiply by 2
+// n ^ n = 0     — XOR with self = 0
+// n ^ 0 = n     — XOR with 0 = n
+// n & (n-1)     — clear lowest set bit`,
+  timeComplexity:'O(n) or O(log n)',
+  spaceComplexity:'O(1)',
+  problems:[
+    {name:'Single Number',diff:'e',id:'136'},
+    {name:'Number of 1 Bits',diff:'e',id:'191'},
+    {name:'Counting Bits',diff:'e',id:'338'},
+    {name:'Reverse Bits',diff:'e',id:'190'},
+    {name:'Missing Number',diff:'e',id:'268'},
+  ],
+},
+'cyclic-sort':{
+  title:'Cyclic Sort',
+  desc:'When you have numbers in the range 1 to n (or 0 to n), place each number at its correct index. After one pass, whatever is missing or duplicated becomes obvious by comparing index to value.',
+  difficulty:'Easy → Medium',
+  signals:[
+    '"Find the <em>missing number</em> in range 1..n"',
+    '"Find all <em>duplicates</em> in range 1..n"',
+    '"Find the <em>first missing positive</em>"',
+    'Array of <em>n numbers in range 1 to n</em> (or 0 to n)',
+    'Problem says <em>O(1) space</em> + numbers in a known range',
+  ],
+  when:'The input contains numbers in a known range (1 to n or 0 to n) and the problem asks about missing, duplicate, or misplaced elements. Cyclic sort places each number at its "home" index in O(n) time and O(1) space.',
+  template:`// Cyclic sort: place each number at its correct index
+function cyclicSort(nums) {
+  let i = 0;
+  while (i < nums.length) {
+    const correctIdx = nums[i] - 1; // for 1-indexed
+    if (nums[i] !== nums[correctIdx]) {
+      // Swap to correct position
+      [nums[i], nums[correctIdx]] = [nums[correctIdx], nums[i]];
+    } else {
+      i++;
+    }
+  }
+  return nums;
+}
+
+// Find missing number:
+function findMissing(nums) {
+  // After cyclic sort, nums[i] should be i+1
+  let i = 0;
+  while (i < nums.length) {
+    const j = nums[i] - 1;
+    if (nums[i] > 0 && nums[i] <= nums.length && nums[i] !== nums[j]) {
+      [nums[i], nums[j]] = [nums[j], nums[i]];
+    } else {
+      i++;
+    }
+  }
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] !== i + 1) return i + 1;
+  }
+  return nums.length + 1;
+}`,
+  timeComplexity:'O(n)',
+  spaceComplexity:'O(1)',
+  problems:[
+    {name:'Missing Number',diff:'e',id:'268'},
+    {name:'Find All Numbers Disappeared in Array',diff:'e',id:'448'},
+    {name:'Find All Duplicates in Array',diff:'m',id:'442'},
+    {name:'First Missing Positive',diff:'h',id:'41'},
+    {name:'Set Mismatch',diff:'e',id:'645'},
+  ],
+},
+'k-way-merge':{
+  title:'K-way Merge',
+  desc:'Merge K sorted inputs using a min-heap. The heap always holds the smallest element from each input. Pop the smallest, push the next element from that input. Generalizes merge sort\'s merge step.',
+  difficulty:'Medium → Hard',
+  signals:[
+    '"<em>Merge K sorted</em> lists/arrays"',
+    '"<em>Smallest range</em> covering elements from K lists"',
+    '"Find the <em>Kth smallest</em> in a sorted matrix"',
+    'Problem involves <em>multiple sorted</em> sources',
+  ],
+  when:'You have K sorted sequences and need to produce a single sorted output, or find the Kth element across all sequences. A min-heap of size K gives you the global minimum at each step.',
+  template:`// Merge K sorted lists:
+function mergeKLists(lists) {
+  const heap = new MinPriorityQueue({compare: (a, b) => a.val - b.val});
+  
+  // Add the head of each list to the heap
+  for (const head of lists) {
+    if (head) heap.enqueue(head);
+  }
+  
+  const dummy = {next: null};
+  let tail = dummy;
+  
+  while (heap.size()) {
+    const smallest = heap.dequeue();
+    tail.next = smallest;
+    tail = tail.next;
+    
+    // Push the next node from the same list
+    if (smallest.next) {
+      heap.enqueue(smallest.next);
+    }
+  }
+  return dummy.next;
+}
+
+// Kth smallest in sorted matrix:
+function kthSmallest(matrix, k) {
+  const n = matrix.length;
+  const heap = new MinPriorityQueue({compare: (a,b) => a.val - b.val});
+  
+  // Add first element from each row
+  for (let r = 0; r < n; r++) {
+    heap.enqueue({val: matrix[r][0], row: r, col: 0});
+  }
+  
+  let count = 0;
+  while (heap.size()) {
+    const {val, row, col} = heap.dequeue();
+    count++;
+    if (count === k) return val;
+    if (col + 1 < n) {
+      heap.enqueue({val: matrix[row][col+1], row, col: col+1});
+    }
+  }
+}`,
+  timeComplexity:'O(n log k)',
+  spaceComplexity:'O(k)',
+  problems:[
+    {name:'Merge K Sorted Lists',diff:'h',id:'23'},
+    {name:'Kth Smallest Element in a Sorted Matrix',diff:'m',id:'378'},
+    {name:'Smallest Range Covering Elements from K Lists',diff:'h',id:'632'},
+    {name:'Find K Pairs with Smallest Sums',diff:'m',id:'373'},
+  ],
+},
+'kadanes':{
+  title:'Kadane\'s Algorithm',
+  desc:'Find the maximum subarray sum in O(n). At each position, decide: extend the current subarray or start fresh. If the running sum goes negative, reset — a negative prefix can never help.',
+  difficulty:'Easy → Medium',
+  signals:[
+    '"Find the <em>maximum subarray</em> sum"',
+    '"<em>Maximum sum</em> contiguous subarray"',
+    '"<em>Best time to buy and sell</em> stock"',
+    '"Maximum <em>product</em> subarray"',
+    'Problem asks for optimal <em>contiguous subarray</em> with a cumulative property',
+  ],
+  when:'The problem asks for the maximum (or minimum) sum/product of a contiguous subarray. The key insight: a negative running total is worse than starting fresh from the next element.',
+  template:`// Maximum subarray sum:
+function maxSubArray(nums) {
+  let maxSum = nums[0];
+  let currentSum = nums[0];
+  
+  for (let i = 1; i < nums.length; i++) {
+    // Extend current subarray or start fresh
+    currentSum = Math.max(nums[i], currentSum + nums[i]);
+    maxSum = Math.max(maxSum, currentSum);
+  }
+  return maxSum;
+}
+
+// With indices (find the actual subarray):
+function maxSubArrayRange(nums) {
+  let maxSum = nums[0], currentSum = nums[0];
+  let start = 0, end = 0, tempStart = 0;
+  
+  for (let i = 1; i < nums.length; i++) {
+    if (currentSum + nums[i] < nums[i]) {
+      currentSum = nums[i];
+      tempStart = i;
+    } else {
+      currentSum += nums[i];
+    }
+    if (currentSum > maxSum) {
+      maxSum = currentSum;
+      start = tempStart;
+      end = i;
+    }
+  }
+  return { maxSum, start, end };
+}
+
+// Best time to buy and sell stock (Kadane variant):
+function maxProfit(prices) {
+  let minPrice = prices[0], maxProfit = 0;
+  for (let i = 1; i < prices.length; i++) {
+    maxProfit = Math.max(maxProfit, prices[i] - minPrice);
+    minPrice = Math.min(minPrice, prices[i]);
+  }
+  return maxProfit;
+}`,
+  timeComplexity:'O(n)',
+  spaceComplexity:'O(1)',
+  problems:[
+    {name:'Maximum Subarray',diff:'m',id:'53'},
+    {name:'Best Time to Buy and Sell Stock',diff:'e',id:'121'},
+    {name:'Maximum Product Subarray',diff:'m',id:'152'},
+    {name:'Maximum Sum Circular Subarray',diff:'m',id:'918'},
+  ],
+},
+};
+
+// ═══════════════════════════════════════════════════════════
+//  PATTERN METADATA — prereqs, brute→optimal, connections
+// ═══════════════════════════════════════════════════════════
+const PAT_PREREQS={
+  'two-pointers':[],
+  'sliding-window':['two-pointers'],
+  'fast-slow':['two-pointers'],
+  'merge-intervals':[],
+  'binary-search':[],
+  'bfs':[],
+  'dfs':['bfs'],
+  'backtracking':['dfs'],
+  'top-k':[],
+  'two-heaps':['top-k'],
+  'monotonic-stack':[],
+  'dp':['dfs','backtracking'],
+  'greedy':[],
+  'topo-sort':['bfs','dfs'],
+  'union-find':['dfs'],
+  'trie':['dfs'],
+  'prefix-sum':[],
+  'bit-manipulation':[],
+  'cyclic-sort':[],
+  'k-way-merge':['top-k'],
+  'kadanes':[],
+};
+
+const PAT_BRUTE={
+  'two-pointers':{brute:'O(n²) nested loops checking every pair',optimal:'O(n) with two pointers from both ends on sorted input',why:'Sorted order means if sum is too small, moving left pointer up increases it; if too big, moving right pointer down decreases it. Each element is visited at most once.'},
+  'sliding-window':{brute:'O(n × k) recomputing each subarray from scratch',optimal:'O(n) by adding the new element and removing the old one',why:'Instead of recomputing the entire window each time, you maintain a running state and adjust it incrementally — subtract what leaves the window, add what enters.'},
+  'fast-slow':{brute:'O(n) space using a HashSet to track visited nodes',optimal:'O(1) space with two pointers at different speeds',why:'If there\'s a cycle, the fast pointer laps the slow pointer — like two runners on a circular track. No extra storage needed to detect the meeting point.'},
+  'merge-intervals':{brute:'O(n²) comparing every interval with every other',optimal:'O(n log n) sort by start, then single pass to merge',why:'After sorting, overlapping intervals are adjacent. You only need to compare each interval with the last merged one — a single scan.'},
+  'binary-search':{brute:'O(n) linear scan through all elements',optimal:'O(log n) by halving the search space each step',why:'Each comparison eliminates half the remaining elements. 1 million elements need only 20 comparisons instead of 1 million.'},
+  'bfs':{brute:'O(V!) trying all possible paths to find the shortest',optimal:'O(V + E) level-by-level exploration guarantees shortest path first',why:'BFS explores all nodes at distance d before any node at distance d+1. The first time you reach the target is guaranteed to be the shortest path in unweighted graphs.'},
+  'dfs':{brute:'No brute force improvement — DFS is itself the efficient traversal',optimal:'O(V + E) visiting each node and edge once',why:'DFS is the foundation — the optimization comes from choosing DFS vs BFS for the right problem. DFS uses less memory (stack vs queue) and naturally handles recursion.'},
+  'backtracking':{brute:'O(n!) generating all possibilities then filtering valid ones',optimal:'O(2ⁿ) or better with pruning — skip invalid branches early',why:'Instead of generating every possibility and checking after, backtracking abandons a path the moment it can\'t lead to a valid solution. Pruning cuts exponential branches.'},
+  'top-k':{brute:'O(n log n) sort the entire array, take first K',optimal:'O(n log k) maintain a heap of only K elements',why:'You don\'t need the entire array sorted — only the K best. A min-heap of size K automatically evicts the smallest, keeping only the K largest at all times.'},
+  'two-heaps':{brute:'O(n log n) re-sort after each insertion to find median',optimal:'O(log n) per insertion with two heaps maintaining the split',why:'The max-heap holds the smaller half, min-heap the larger half. The median is always at the top of one or both heaps — no re-sorting needed.'},
+  'monotonic-stack':{brute:'O(n²) for each element, scan right to find next greater',optimal:'O(n) each element pushed and popped at most once',why:'The stack maintains elements waiting for their "next greater." When a larger element arrives, it resolves all waiting smaller elements in one pass.'},
+  'dp':{brute:'O(2ⁿ) recursive solution recomputing the same subproblems',optimal:'O(n × m) by storing results of subproblems in a table',why:'Overlapping subproblems mean the same calculation happens exponentially many times. Memoization stores each result once. Fibonacci: recursive = O(2ⁿ), DP = O(n).'},
+  'greedy':{brute:'O(2ⁿ) try all combinations to find the optimal',optimal:'O(n log n) sort + single greedy pass',why:'When the greedy choice property holds, the locally best option at each step produces the globally best result. No need to explore all combinations.'},
+  'topo-sort':{brute:'O(V!) try all permutations, check if each is valid',optimal:'O(V + E) using BFS with in-degree tracking',why:'Kahn\'s algorithm processes nodes with zero dependencies first, then removes their edges — naturally producing a valid ordering in one pass.'},
+  'union-find':{brute:'O(V × (V + E)) run BFS/DFS for each connectivity query',optimal:'O(α(n)) ≈ O(1) per query with path compression + rank',why:'Path compression flattens the tree on every find, and union by rank keeps it balanced. After a few operations, every node points almost directly to the root.'},
+  'trie':{brute:'O(n × L) check every word for prefix match using startsWith',optimal:'O(L) traverse the trie following the prefix characters',why:'The trie shares common prefixes across all words. Searching "pre" immediately narrows to all words starting with "pre" without scanning unrelated words.'},
+  'prefix-sum':{brute:'O(n) per range query — recalculate the sum each time',optimal:'O(1) per query after O(n) preprocessing',why:'Prefix sums store cumulative totals. The sum of any range [i,j] is just prefix[j+1] - prefix[i] — two array lookups instead of iterating.'},
+  'bit-manipulation':{brute:'O(n) space using a HashSet/HashMap to find unique elements',optimal:'O(1) space using XOR — duplicates cancel out (a^a=0)',why:'XOR has the perfect property: pairing identical values produces zero. After XORing all elements, only the unpaired value survives. No extra storage needed.'},
+  'cyclic-sort':{brute:'O(n) space using a boolean array to mark seen numbers',optimal:'O(1) space — use the array itself as a hash map by placing each number at its index',why:'Numbers 1..n can serve as their own index. Put each number at position (number-1). After one pass, any index where value != index+1 reveals the missing or duplicate number.'},
+  'k-way-merge':{brute:'O(n × k) scan all K lists each time to find the minimum',optimal:'O(n log k) with a min-heap holding one element per list',why:'The heap tracks the current minimum across all K lists. Pop the min, push the next from that list. Each of the n total elements is pushed and popped once — log k per operation.'},
+  'kadanes':{brute:'O(n²) or O(n³) checking all subarrays and computing their sums',optimal:'O(n) single pass — extend the running sum or reset',why:'A negative running total is always worse than starting fresh. At each position, the best subarray either extends the previous best or starts new. One decision per element.'},
+};
+
+const PAT_RELATED={
+  'two-pointers':['sliding-window','binary-search','merge-intervals','prefix-sum'],
+  'sliding-window':['two-pointers','top-k','kadanes','prefix-sum'],
+  'fast-slow':['two-pointers','union-find'],
+  'merge-intervals':['two-pointers','greedy'],
+  'binary-search':['two-pointers','dp'],
+  'bfs':['dfs','topo-sort'],
+  'dfs':['bfs','backtracking','topo-sort','union-find'],
+  'backtracking':['dfs','dp'],
+  'top-k':['two-heaps','sliding-window','k-way-merge'],
+  'two-heaps':['top-k','k-way-merge'],
+  'monotonic-stack':['two-pointers','dp','kadanes'],
+  'dp':['backtracking','greedy','binary-search','kadanes'],
+  'greedy':['dp','merge-intervals','kadanes'],
+  'topo-sort':['bfs','dfs'],
+  'union-find':['dfs','bfs'],
+  'trie':['dfs','backtracking'],
+  'prefix-sum':['sliding-window','two-pointers','kadanes'],
+  'bit-manipulation':['cyclic-sort'],
+  'cyclic-sort':['bit-manipulation','binary-search'],
+  'k-way-merge':['top-k','two-heaps'],
+  'kadanes':['sliding-window','prefix-sum','dp','greedy'],
+};
+
+const DS_PATTERNS={
+  'array':['two-pointers','sliding-window','binary-search','prefix-sum','kadanes','cyclic-sort'],
+  'hashmap':['two-pointers','sliding-window','prefix-sum','top-k'],
+  'hashset':['two-pointers','sliding-window','cyclic-sort'],
+  'stack':['dfs','backtracking','monotonic-stack'],
+  'queue':['bfs','topo-sort'],
+  'heap':['top-k','two-heaps','k-way-merge'],
+  'linkedlist':['fast-slow','two-pointers','k-way-merge'],
+  'bintree':['dfs','bfs','backtracking'],
+  'bst':['dfs','binary-search'],
+  'graph':['bfs','dfs','topo-sort','union-find'],
+  'ds-trie':['trie','dfs','backtracking'],
+  'ds-uf':['union-find','dfs'],
+};
+
+// ═══════════════════════════════════════════════════════════
+//  DATA STRUCTURES
+// ═══════════════════════════════════════════════════════════
+const DS_DATA=[
+  {id:'array',name:'Array',desc:'Contiguous memory, indexed access. The default — start here unless you need something specific.',
+  ops:{Access:'O(1)',Search:'O(n)',Insert:'O(n)',Delete:'O(n)','Push/Pop':'O(1)'},
+  when:'Need indexed access, iteration, or the problem input is already an array. Most problems start here.',
+  howItWorks:'Elements stored in contiguous memory. Access by index is instant because the memory address = base + index × element_size. Insertion/deletion in the middle requires shifting all subsequent elements.',
+  tricks:['Sort first — enables binary search, two pointers, and merge intervals','Use as a HashMap when values are in range 0..n (index = key)','In-place modification avoids O(n) space — swap elements instead of creating new arrays','Prefix sums turn range-sum queries from O(n) to O(1)'],
+  problems:[{name:'Two Sum',diff:'e',id:'1'},{name:'Product of Array Except Self',diff:'m',id:'238'},{name:'Rotate Array',diff:'m',id:'189'},{name:'Maximum Subarray',diff:'m',id:'53'}]},
+
+  {id:'hashmap',name:'HashMap / Object',desc:'Key-value store with O(1) average lookup. The most versatile DS for interview problems — 70% of "optimize this" answers involve a HashMap.',
+  ops:{Get:'O(1)',Set:'O(1)',Delete:'O(1)',Has:'O(1)'},
+  when:'Need O(1) lookup by key. Counting frequencies, caching seen values, two-sum-style problems. The first optimization to try.',
+  howItWorks:'Keys are hashed to bucket indices. Collisions handled by chaining (linked list per bucket) or open addressing. Load factor triggers resize. Average O(1) assumes good hash distribution.',
+  tricks:['Frequency counting: count occurrences in one pass, then query','Complement lookup: for each element, check if target-element exists','Grouping: group anagrams by sorted key, group by any derived property','Two-pass pattern: first pass builds the map, second pass queries it'],
+  problems:[{name:'Two Sum',diff:'e',id:'1'},{name:'Group Anagrams',diff:'m',id:'49'},{name:'LRU Cache',diff:'m',id:'146'},{name:'Subarray Sum Equals K',diff:'m',id:'560'}]},
+
+  {id:'hashset',name:'HashSet',desc:'Stores unique values with O(1) membership check. Like a HashMap without values.',
+  ops:{Add:'O(1)',Has:'O(1)',Delete:'O(1)'},
+  when:'Need to track "have I seen this before?" without caring about counts. Duplicate detection, visited tracking in BFS/DFS.',
+  howItWorks:'Same as HashMap internally but only stores keys, no values. Backed by the same hash table mechanism.',
+  tricks:['Cycle detection: track visited nodes in graph traversal','Duplicate removal: add all elements, set only keeps uniques','Set operations: intersection, union, difference for comparing collections','O(1) lookup replaces O(n) "array.includes()" — always prefer Set for membership checks'],
+  problems:[{name:'Contains Duplicate',diff:'e',id:'217'},{name:'Longest Consecutive Sequence',diff:'m',id:'128'},{name:'Happy Number',diff:'e',id:'202'}]},
+
+  {id:'stack',name:'Stack (LIFO)',desc:'Last-In-First-Out. Push and pop from the same end. Mirrors recursion — anything recursive can be iterative with a stack.',
+  ops:{Push:'O(1)',Pop:'O(1)',Peek:'O(1)'},
+  when:'Nested structures (parentheses, HTML tags), undo operations, DFS, expression evaluation, monotonic stack problems.',
+  howItWorks:'A restricted list where you can only add/remove from the top. Implemented as an array with a top pointer, or using push/pop on a dynamic array. Call stack in recursion is literally a stack.',
+  tricks:['Matching pairs: push opens, pop on close, check match (parentheses, tags)','Monotonic stack: maintain sorted order for next-greater-element problems','Convert recursion to iteration: explicit stack replaces the call stack','Expression evaluation: operator precedence with two stacks (values + operators)'],
+  problems:[{name:'Valid Parentheses',diff:'e',id:'20'},{name:'Min Stack',diff:'m',id:'155'},{name:'Daily Temperatures',diff:'m',id:'739'},{name:'Largest Rectangle in Histogram',diff:'h',id:'84'}]},
+
+  {id:'queue',name:'Queue (FIFO)',desc:'First-In-First-Out. Enqueue at back, dequeue from front. The foundation of BFS.',
+  ops:{Enqueue:'O(1)',Dequeue:'O(1)',Peek:'O(1)'},
+  when:'BFS, level-order traversal, task scheduling, sliding window (deque). Anything that processes in order of arrival.',
+  howItWorks:'Add to the back, remove from the front. Implemented as a linked list (O(1) both ends) or circular array. Deque (double-ended queue) allows add/remove from both ends.',
+  tricks:['BFS always uses a queue — level-by-level exploration','Track level size: snapshot queue.length at the start of each level','Deque for sliding window max/min: maintain a monotonic deque','Circular queue: reuse array space by wrapping indices with modulo'],
+  problems:[{name:'Binary Tree Level Order Traversal',diff:'m',id:'102'},{name:'Rotting Oranges',diff:'m',id:'994'},{name:'Sliding Window Maximum',diff:'h',id:'239'},{name:'Design Circular Queue',diff:'m',id:'622'}]},
+
+  {id:'heap',name:'Heap / Priority Queue',desc:'A complete binary tree where every parent is greater (max-heap) or smaller (min-heap) than its children. Gives you the max or min in O(1) and insert/remove in O(log n).',
+  ops:{Insert:'O(log n)',ExtractMax:'O(log n)',PeekMax:'O(1)'},
+  when:'Need the K largest/smallest, running median, merge K sorted lists, Dijkstra\'s algorithm. Anytime you need efficient access to the extreme value.',
+  howItWorks:'Stored as an array. For node at index i: left child = 2i+1, right child = 2i+2, parent = floor((i-1)/2). Insert: add at end, bubble up. Extract: swap root with last, remove last, bubble down.',
+  tricks:['Min-heap of size K for "K largest" (counterintuitive — small heap, big elements survive)','Max-heap of size K for "K smallest"','Two heaps for running median: max-heap for lower half, min-heap for upper half','In JavaScript: use a PriorityQueue library or implement with array + heapify'],
+  problems:[{name:'Kth Largest Element',diff:'m',id:'215'},{name:'Top K Frequent Elements',diff:'m',id:'347'},{name:'Merge K Sorted Lists',diff:'h',id:'23'},{name:'Find Median from Data Stream',diff:'h',id:'295'}]},
+
+  {id:'linkedlist',name:'Linked List',desc:'Nodes with pointers to the next (and optionally previous) node. O(1) insert/delete at known position, but O(n) search.',
+  ops:{Access:'O(n)',Search:'O(n)','Insert*':'O(1)','Delete*':'O(1)'},
+  when:'Need O(1) insert/delete at a known position. LRU cache, merging sorted lists, cycle detection. *O(1) only if you have the node reference.',
+  howItWorks:'Each node stores a value and a pointer to the next node. Singly linked: one direction. Doubly linked: forward and backward pointers. No random access — must traverse from head.',
+  tricks:['Dummy head node simplifies edge cases (empty list, insert at head)','Fast & slow pointers: find middle, detect cycles','Reverse in-place: prev/curr/next pointer dance','Merge two sorted lists: compare heads, advance the smaller one'],
+  problems:[{name:'Reverse Linked List',diff:'e',id:'206'},{name:'Merge Two Sorted Lists',diff:'e',id:'21'},{name:'Linked List Cycle',diff:'e',id:'141'},{name:'LRU Cache',diff:'m',id:'146'}]},
+
+  {id:'bintree',name:'Binary Tree',desc:'Each node has at most two children. Foundation for BST, heaps, and many recursive problems.',
+  ops:{Search:'O(n)',Insert:'O(n)',Delete:'O(n)'},
+  when:'Hierarchical data, expression parsing, decision trees. Most tree interview problems are about traversal patterns (preorder, inorder, postorder).',
+  howItWorks:'Root node with left and right children. Leaf nodes have no children. Height = longest path from root to leaf. Balanced tree: height ≈ log n. Skewed tree: height = n.',
+  tricks:['Recursion is natural: process root, recurse left, recurse right','Three traversals: preorder (root-left-right), inorder (left-root-right), postorder (left-right-root)','Max depth = 1 + max(left depth, right depth) — the classic recursive pattern','Level-order = BFS with a queue, recording each level separately'],
+  problems:[{name:'Maximum Depth of Binary Tree',diff:'e',id:'104'},{name:'Invert Binary Tree',diff:'e',id:'226'},{name:'Binary Tree Level Order Traversal',diff:'m',id:'102'},{name:'Lowest Common Ancestor',diff:'m',id:'236'}]},
+
+  {id:'bst',name:'Binary Search Tree',desc:'A binary tree where left < root < right. Enables O(log n) search, insert, delete — but only if balanced.',
+  ops:{Search:'O(log n)',Insert:'O(log n)',Delete:'O(log n)'},
+  when:'Need sorted data with efficient insert/delete/search. In interviews, BST problems usually test inorder traversal (gives sorted order).',
+  howItWorks:'Left subtree contains only values less than root. Right subtree contains only values greater. Inorder traversal produces sorted output. Balanced BSTs (AVL, Red-Black) guarantee O(log n) height.',
+  tricks:['Inorder traversal = sorted order — use this to validate BSTs','To find kth smallest: inorder traversal, count to k','Successor/predecessor: go right then leftmost (successor), or left then rightmost (predecessor)','Validate BST: pass min/max bounds recursively, not just compare with parent'],
+  problems:[{name:'Validate Binary Search Tree',diff:'m',id:'98'},{name:'Kth Smallest Element in a BST',diff:'m',id:'230'},{name:'Lowest Common Ancestor of a BST',diff:'m',id:'235'},{name:'Convert Sorted Array to BST',diff:'e',id:'108'}]},
+
+  {id:'graph',name:'Graph',desc:'Nodes connected by edges. Can be directed or undirected, weighted or unweighted. Represented as adjacency list or matrix.',
+  ops:{AddEdge:'O(1)',FindEdge:'O(V)',BFS:'O(V+E)',DFS:'O(V+E)'},
+  when:'Relationships, networks, paths, connectivity. If the problem describes connections between things, model it as a graph.',
+  howItWorks:'Adjacency list: each node stores a list of neighbors (space-efficient for sparse graphs). Adjacency matrix: V×V boolean grid (fast edge lookup but O(V²) space). Most interview problems use adjacency lists.',
+  tricks:['Build the graph first: parse edges into an adjacency list before traversing','Visited set prevents infinite loops in cycles','BFS = shortest path (unweighted), DFS = explore all paths','Detect cycle: DFS with "visiting" state (3-color: white/gray/black)'],
+  problems:[{name:'Number of Islands',diff:'m',id:'200'},{name:'Clone Graph',diff:'m',id:'133'},{name:'Course Schedule',diff:'m',id:'207'},{name:'Pacific Atlantic Water Flow',diff:'m',id:'417'}]},
+
+  {id:'ds-trie',name:'Trie',desc:'A tree for strings where each node is a character. Paths represent prefixes. O(L) operations where L is word length.',
+  ops:{Insert:'O(L)',Search:'O(L)',Prefix:'O(L)'},
+  when:'Prefix-based search: autocomplete, spell check, word search. When you need "all words starting with..." efficiently.',
+  howItWorks:'Root is empty. Each edge represents a character. Path from root to a node spells a prefix. Nodes marked as "end" indicate complete words. Children stored in a map or 26-element array (for lowercase English).',
+  tricks:['Use a map for children (flexible) or array of 26 (faster for lowercase English)','isEnd flag marks complete words vs just prefixes','Word search in grid: build trie from word list, DFS from each cell following trie paths','Delete: decrement counts or remove leaf nodes bottom-up'],
+  problems:[{name:'Implement Trie',diff:'m',id:'208'},{name:'Word Search II',diff:'h',id:'212'},{name:'Design Add and Search Words',diff:'m',id:'211'},{name:'Replace Words',diff:'m',id:'648'}]},
+
+  {id:'ds-uf',name:'Union-Find',desc:'Tracks connected components. Find which group an element belongs to, union two groups. Near O(1) with path compression + rank.',
+  ops:{Find:'O(α(n))',Union:'O(α(n))'},
+  when:'Dynamic connectivity: "are X and Y connected?", counting components, detecting cycles in undirected graphs. Kruskal\'s MST.',
+  howItWorks:'Each element points to a parent. Root of the tree = group representative. Find: follow parent pointers to root. Union: connect one root to the other. Path compression: during find, point all nodes directly to root. Union by rank: attach shorter tree under taller tree.',
+  tricks:['Path compression: in find(), set each node\'s parent directly to root','Union by rank: always attach the shorter tree to the taller one','Count components: start with n, decrement on each successful union','Detect cycle in undirected graph: if find(u) === find(v) before union, adding edge (u,v) creates a cycle'],
+  problems:[{name:'Number of Connected Components',diff:'m',id:'323'},{name:'Redundant Connection',diff:'m',id:'684'},{name:'Accounts Merge',diff:'m',id:'721'},{name:'Number of Provinces',diff:'m',id:'547'}]},
+];
+
+// ═══════════════════════════════════════════════════════════
+//  INTERVIEW PROBLEMS
+// ═══════════════════════════════════════════════════════════
+const IV_PROBLEMS=[
+  // Two Pointers
+  {title:'Two Sum II (Sorted)',desc:'Given a sorted array of integers and a target, return indices of two numbers that add up to the target. The array is 1-indexed.',diff:'Easy',pattern:'Two Pointers',hints:['The array is sorted — what technique works on sorted input?','Start from both ends. What happens when sum is too small?','Each pointer moves only inward.']},
+  {title:'3Sum',desc:'Given an array, find all unique triplets [a, b, c] such that a + b + c = 0.',diff:'Medium',pattern:'Two Pointers',hints:['Sort first. Fix one element, then two-sum on the rest.','How do you skip duplicates?','Two pointers on the remaining sorted subarray.']},
+  {title:'Container With Most Water',desc:'Given n vertical lines, find two lines that together with the x-axis forms a container that holds the most water.',diff:'Medium',pattern:'Two Pointers',hints:['Start wide (left=0, right=end).','Which pointer should you move — the shorter or taller one?','Moving the shorter one might find a taller line.']},
+  // Sliding Window
+  {title:'Longest Substring Without Repeating Characters',desc:'Given a string, find the length of the longest substring without repeating characters.',diff:'Medium',pattern:'Sliding Window',hints:['What defines a valid window?','Use a set or map to track characters in the window.','When you find a duplicate, shrink from the left.']},
+  {title:'Minimum Window Substring',desc:'Given strings s and t, find the minimum window in s which contains all characters of t.',diff:'Hard',pattern:'Sliding Window',hints:['Expand right to include all chars of t.','Once all chars included, shrink from left.','Track character counts with a frequency map.']},
+  // Fast & Slow
+  {title:'Linked List Cycle',desc:'Given head of a linked list, determine if it has a cycle.',diff:'Easy',pattern:'Fast & Slow Pointers',hints:['Two pointers at different speeds.','If there\'s a cycle, fast will eventually meet slow.','What if fast reaches null?']},
+  {title:'Happy Number',desc:'A number is happy if repeatedly replacing it with the sum of squares of its digits eventually reaches 1. Determine if n is happy.',diff:'Easy',pattern:'Fast & Slow Pointers',hints:['The sequence either reaches 1 or enters a cycle.','How do you detect a cycle without storing all values?','Fast & slow on the sequence of digit-square sums.']},
+  // Merge Intervals
+  {title:'Merge Intervals',desc:'Given an array of intervals [start, end], merge all overlapping intervals.',diff:'Medium',pattern:'Merge Intervals',hints:['What if you sort by start time first?','When do two intervals overlap?','How do you handle the merged interval\'s end?']},
+  {title:'Meeting Rooms II',desc:'Given an array of meeting time intervals, find the minimum number of conference rooms required.',diff:'Medium',pattern:'Merge Intervals',hints:['Sort by start time.','Use a min-heap to track end times of active meetings.','When a new meeting starts, can it reuse a room?']},
+  // Binary Search
+  {title:'Search in Rotated Sorted Array',desc:'Search for a target in a sorted array that has been rotated at an unknown pivot.',diff:'Medium',pattern:'Binary Search',hints:['One half is always sorted after rotation.','How do you determine which half is sorted?','Check if target falls within the sorted half.']},
+  {title:'Find Peak Element',desc:'Find a peak element where the element is strictly greater than its neighbors. Return its index.',diff:'Medium',pattern:'Binary Search',hints:['A peak must exist (why?).','If mid < mid+1, a peak exists to the right.','Binary search on the "uphill" direction.']},
+  // BFS
+  {title:'Binary Tree Level Order Traversal',desc:'Given a binary tree, return the level order traversal of its nodes\' values (level by level, left to right).',diff:'Medium',pattern:'BFS',hints:['Use a queue.','Process all nodes at the current level before moving to the next.','Track level size at the start of each iteration.']},
+  {title:'Rotting Oranges',desc:'In a grid, fresh oranges rot adjacent oranges each minute. Find the minimum minutes until no fresh orange remains, or -1 if impossible.',diff:'Medium',pattern:'BFS',hints:['Multi-source BFS — start from all rotten oranges simultaneously.','Each BFS level = one minute.','Check if any fresh oranges remain after BFS.']},
+  {title:'Word Ladder',desc:'Given a start word, end word, and dictionary, find the length of the shortest transformation sequence where each step changes exactly one letter.',diff:'Hard',pattern:'BFS',hints:['Why BFS and not DFS?','How do you find all words one letter apart?','When can you stop searching?']},
+  // DFS
+  {title:'Number of Islands',desc:'Given a 2D grid of "1"s (land) and "0"s (water), count the number of islands.',diff:'Medium',pattern:'DFS',hints:['How do you find all cells belonging to one island?','Once you visit a cell, how do you avoid counting it again?','How many times do you start a new search?']},
+  {title:'Path Sum',desc:'Given a binary tree and a target sum, determine if the tree has a root-to-leaf path where values sum to the target.',diff:'Easy',pattern:'DFS',hints:['Subtract the current node\'s value from the target as you go.','When do you check if you\'ve found a valid path?','A leaf has no left or right child.']},
+  {title:'Course Schedule',desc:'There are n courses with prerequisites. Determine if you can finish all courses (no cycles).',diff:'Medium',pattern:'DFS / Topological Sort',hints:['What kind of graph does this form?','What does it mean if you can\'t finish?','Which algorithm detects cycles in a directed graph?']},
+  // Backtracking
+  {title:'Subsets',desc:'Given an array of unique integers, return all possible subsets.',diff:'Medium',pattern:'Backtracking',hints:['For each element: include it or don\'t.','How do you avoid duplicates?','What\'s the base case?']},
+  {title:'Combination Sum',desc:'Given an array of distinct integers and a target, find all unique combinations that sum to the target. Numbers can be reused.',diff:'Medium',pattern:'Backtracking',hints:['Choose, explore, unchoose.','Since numbers can repeat, don\'t advance the start index.','When does a branch become invalid?']},
+  {title:'N-Queens',desc:'Place n queens on an n×n chessboard so no two queens threaten each other. Return all distinct solutions.',diff:'Hard',pattern:'Backtracking',hints:['Place one queen per row.','How do you check column and diagonal conflicts?','Backtrack when no valid column exists for a row.']},
+  // Top K
+  {title:'Kth Largest Element',desc:'Find the kth largest element in an unsorted array.',diff:'Medium',pattern:'Top K / Heap',hints:['Do you need to fully sort?','What size heap do you need?','Min-heap or max-heap for kth largest?']},
+  {title:'Top K Frequent Elements',desc:'Given an integer array and k, return the k most frequent elements.',diff:'Medium',pattern:'Top K / Heap',hints:['First count frequencies.','Then find the top K by frequency.','Heap or bucket sort?']},
+  // Two Heaps
+  {title:'Find Median from Data Stream',desc:'Design a data structure that supports addNum and findMedian for a stream of integers.',diff:'Hard',pattern:'Two Heaps',hints:['Max-heap for lower half, min-heap for upper half.','How do you keep them balanced?','Where is the median relative to the heap tops?']},
+  // Monotonic Stack
+  {title:'Daily Temperatures',desc:'Given daily temperatures, for each day, find how many days you have to wait for a warmer temperature.',diff:'Medium',pattern:'Monotonic Stack',hints:['For each temperature, you need the next greater one.','A stack of indices waiting for a warmer day.','When you find a warmer day, resolve all colder waiting days.']},
+  {title:'Largest Rectangle in Histogram',desc:'Given an array of bar heights, find the area of the largest rectangle that can be formed.',diff:'Hard',pattern:'Monotonic Stack',hints:['For each bar, find how far it can extend left and right.','A monotonic increasing stack helps find boundaries.','When a shorter bar arrives, resolve taller waiting bars.']},
+  // DP
+  {title:'Climbing Stairs',desc:'You can climb 1 or 2 steps at a time. In how many distinct ways can you reach the top of n stairs?',diff:'Easy',pattern:'Dynamic Programming',hints:['To reach step n, you came from step n-1 or n-2.','What are the base cases?','This is Fibonacci in disguise.']},
+  {title:'Coin Change',desc:'Given coins of different denominations and a total amount, find the fewest coins needed. Return -1 if impossible.',diff:'Medium',pattern:'Dynamic Programming',hints:['What are the subproblems?','For each amount, what choices do you have?','dp[amount] = min coins to make that amount.']},
+  {title:'Longest Increasing Subsequence',desc:'Given an integer array, find the length of the longest strictly increasing subsequence.',diff:'Medium',pattern:'Dynamic Programming',hints:['dp[i] = length of LIS ending at index i.','For each element, check all previous elements.','Can you optimize beyond O(n²)?']},
+  {title:'Edit Distance',desc:'Given two words, find the minimum number of operations (insert, delete, replace) to convert one to the other.',diff:'Hard',pattern:'Dynamic Programming',hints:['2D DP: dp[i][j] = edit distance of first i chars of word1 and first j chars of word2.','Three choices at each cell.','What are the base cases?']},
+  // Greedy
+  {title:'Jump Game',desc:'Given an array where each element is your maximum jump length, determine if you can reach the last index.',diff:'Medium',pattern:'Greedy',hints:['Track the farthest index you can reach.','At each position, update maxReach.','If you\'re beyond maxReach, you\'re stuck.']},
+  {title:'Task Scheduler',desc:'Given tasks with cooldown period n, find the minimum intervals the CPU needs to finish all tasks.',diff:'Medium',pattern:'Greedy',hints:['Most frequent tasks dictate the schedule.','Fill idle slots with other tasks.','Count the frequency of the most common task.']},
+  // Topo Sort
+  {title:'Course Schedule II',desc:'Return the ordering of courses you should take to finish all courses. Return empty if impossible.',diff:'Medium',pattern:'Topological Sort',hints:['Build a graph of prerequisites.','Which nodes have zero in-degree?','What if you can\'t process all nodes?']},
+  // Union-Find
+  {title:'Number of Connected Components',desc:'Given n nodes and a list of edges, find the number of connected components in an undirected graph.',diff:'Medium',pattern:'Union-Find',hints:['Start with n components.','Each edge merges two components.','Count remaining disjoint sets.']},
+  {title:'Redundant Connection',desc:'Find an edge that can be removed so the remaining graph is a tree (connected, no cycles).',diff:'Medium',pattern:'Union-Find',hints:['A tree has n-1 edges for n nodes.','Process edges one by one.','Which edge connects two already-connected nodes?']},
+  // Trie
+  {title:'Implement Trie',desc:'Implement a trie with insert, search, and startsWith methods.',diff:'Medium',pattern:'Trie',hints:['Each node has a map of children.','Insert: create nodes as you go.','Search vs startsWith: what\'s the difference at the end?']},
+  {title:'Word Search II',desc:'Given a board of characters and a list of words, find all words that can be formed by adjacent cells.',diff:'Hard',pattern:'Trie + Backtracking',hints:['Build a trie from the word list.','DFS from each cell, following the trie.','Prune branches where no trie path exists.']},
+  // Prefix Sum
+  {title:'Subarray Sum Equals K',desc:'Given an array of integers and an integer k, find the total number of contiguous subarrays whose sum equals k.',diff:'Medium',pattern:'Prefix Sum',hints:['Prefix sum + HashMap.','What prefix sum difference equals k?','Store prefix sum frequencies as you go.']},
+  {title:'Product of Array Except Self',desc:'Given an integer array, return an array where each element is the product of all elements except itself. No division allowed.',diff:'Medium',pattern:'Prefix Sum',hints:['Prefix products from the left.','Suffix products from the right.','Combine them for the answer at each index.']},
+  // Bit Manipulation
+  {title:'Single Number',desc:'Given a non-empty array where every element appears twice except one, find that single one. O(1) space required.',diff:'Easy',pattern:'Bit Manipulation',hints:['What happens when you XOR a number with itself?','XOR all elements together.','Duplicates cancel out — what remains?']},
+  {title:'Counting Bits',desc:'Given an integer n, return an array of length n+1 where ans[i] is the number of 1s in the binary representation of i.',diff:'Easy',pattern:'Bit Manipulation',hints:['How does the bit count of i relate to i/2?','What does i & 1 tell you?','dp[i] = dp[i >> 1] + (i & 1)']},
+  // Cyclic Sort
+  {title:'First Missing Positive',desc:'Given an unsorted integer array, find the smallest missing positive integer. Must run in O(n) time and O(1) space.',diff:'Hard',pattern:'Cyclic Sort',hints:['The answer must be in range 1 to n+1.','Place each number at index (number - 1).','After sorting, the first index where value != index+1 is the answer.']},
+  {title:'Find All Duplicates in Array',desc:'Given an array of n integers where each value is in range [1, n] and some appear twice, find all duplicates. O(1) extra space.',diff:'Medium',pattern:'Cyclic Sort',hints:['Each number has a "home" index.','What happens when two numbers want the same home?','Cyclic sort, then scan for mismatches.']},
+  // K-way Merge
+  {title:'Merge K Sorted Lists',desc:'Merge k sorted linked lists into one sorted linked list.',diff:'Hard',pattern:'K-way Merge',hints:['Min-heap of size k.','Always pop the smallest, push the next from that list.','How many total operations?']},
+  {title:'Kth Smallest in Sorted Matrix',desc:'Given an n x n matrix where each row and column is sorted, find the kth smallest element.',diff:'Medium',pattern:'K-way Merge',hints:['Treat each row as a sorted list.','Min-heap with one element per row.','Pop k times to find the kth smallest.']},
+  // Kadane's
+  {title:'Maximum Subarray',desc:'Find the contiguous subarray with the largest sum.',diff:'Medium',pattern:"Kadane's Algorithm",hints:['At each position: extend or start fresh?','When is starting fresh better?','Track the running max as you go.']},
+  {title:'Best Time to Buy and Sell Stock',desc:'Given daily stock prices, find the maximum profit from one buy and one sell. You must buy before you sell.',diff:'Easy',pattern:"Kadane's Algorithm",hints:['Track the minimum price seen so far.','At each day, the profit is price - minPrice.','This is Kadane\'s on the price differences.']},
+];
+
+// ═══════════════════════════════════════════════════════════
+//  TIPS
+// ═══════════════════════════════════════════════════════════
+const TIPS=[
+  {cat:'Approach',items:[
+    {title:'Read twice, code once',desc:'Spend 5 minutes understanding the problem before writing a single line. Restate it in your own words. Ask clarifying questions. Most wrong answers come from misunderstanding the problem, not bad code.'},
+    {title:'Start with brute force',desc:'Always describe the brute force first, even if it\'s O(n³). It proves you understand the problem and gives you a baseline to optimize from. Interviewers want to see your optimization thinking.'},
+    {title:'Think out loud',desc:'The interviewer is evaluating your thought process, not just the final code. Narrate: "I\'m thinking about using a HashMap here because I need O(1) lookup for..."'},
+    {title:'Work through an example',desc:'Before coding, trace through a small example by hand. Draw it out. This catches misunderstandings before they become bugs and shows the interviewer your approach works.'},
+    {title:'Identify the pattern first',desc:'Before jumping to code, classify the problem. Is it a graph problem? Sliding window? DP? Knowing the pattern narrows your approach from infinite to 1-2 options.'},
+  ]},
+  {cat:'Edge Cases',items:[
+    {title:'Empty input',desc:'What if the array is empty? String is ""? Tree is null? Graph has no edges? Always handle the empty case first — it\'s the most common bug.'},
+    {title:'Single element',desc:'Array with one element, string with one character, tree with only root. Many algorithms have off-by-one errors here.'},
+    {title:'Duplicates',desc:'What if elements repeat? Does the problem say "distinct"? Duplicates break many naive approaches — especially in two-pointer and backtracking problems.'},
+    {title:'Negative numbers',desc:'Can values be negative? This breaks greedy approaches and changes how you handle sums, products, and comparisons.'},
+    {title:'Integer overflow',desc:'In some languages, multiplying two large numbers overflows. In JavaScript this is less of an issue, but in Java/C++ it matters. Use long or BigInt when needed.'},
+    {title:'Sorted vs unsorted',desc:'Is the input sorted? If yes, binary search and two pointers open up. If no, can you sort it first? Sorting costs O(n log n) but often enables O(n) solutions.'},
+  ]},
+  {cat:'Communication',items:[
+    {title:'Clarify before coding',desc:'"Can the array contain duplicates?" "Is it sorted?" "What should I return if there\'s no solution?" These questions show maturity and prevent wasted effort.'},
+    {title:'State your complexity',desc:'After describing your approach: "This runs in O(n) time and O(n) space because..." Interviewers expect you to analyze complexity without being asked.'},
+    {title:'Signal trade-offs',desc:'"I could use O(n²) with constant space, or O(n) with O(n) space using a HashMap. I\'ll go with the HashMap approach since time complexity matters more here."'},
+    {title:'Manage time visibly',desc:'"I have 20 minutes left. Let me code the core solution first, then handle edge cases." Show you\'re aware of time and prioritizing.'},
+  ]},
+];
+
+// ═══════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function setNav(el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+function sbFilter(q){
+  const term=q.toLowerCase().trim();
+  document.getElementById('sb-clear').classList.toggle('vis',!!term);
+  const items=document.querySelectorAll('.sidebar .nav-item');
+  const labels=document.querySelectorAll('.sidebar .ph-label');
+  const dividers=document.querySelectorAll('.sidebar .sdivider');
+  if(!term){
+    items.forEach(el=>{el.classList.remove('sb-hidden');el.style.display='';});
+    labels.forEach(el=>{el.style.display='';el.classList.remove('collapsed');});
+    dividers.forEach(el=>el.style.display='');
+    return;
+  }
+  items.forEach(el=>{
+    const match=el.textContent.toLowerCase().includes(term);
+    el.classList.toggle('sb-hidden',!match);
+    el.style.display=match?'':'none';
+  });
+  labels.forEach(el=>{
+    let sib=el.nextElementSibling,has=false;
+    while(sib&&!sib.classList.contains('ph-label')&&!sib.classList.contains('sdivider')){
+      if(sib.classList.contains('nav-item')&&!sib.classList.contains('sb-hidden'))has=true;
+      sib=sib.nextElementSibling;
+    }
+    el.style.display=has?'':'none';
+  });
+  dividers.forEach(el=>{
+    const prev=el.previousElementSibling,next=el.nextElementSibling;
+    el.style.display=(prev&&prev.style.display==='none')||(next&&next.style.display==='none')?'none':'';
+  });
+}
+function sbToggle(label){
+  label.classList.toggle('collapsed');
+  const collapsed=label.classList.contains('collapsed');
+  let sib=label.nextElementSibling;
+  while(sib&&!sib.classList.contains('ph-label')&&!sib.classList.contains('sdivider')){
+    if(sib.classList.contains('nav-item'))sib.style.display=collapsed?'none':'';
+    sib=sib.nextElementSibling;
+  }
+}
+function closeKbd(){document.getElementById('kbd-overlay').classList.remove('open');}
+document.addEventListener('keydown',e=>{
+  if(e.key==='?'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!document.activeElement.isContentEditable){e.preventDefault();document.getElementById('kbd-overlay').classList.toggle('open');return;}
+  if(e.key==='Escape'&&document.getElementById('kbd-overlay').classList.contains('open')){closeKbd();return;}
+  if((e.ctrlKey||e.metaKey)&&e.key==='/'){e.preventDefault();document.getElementById('sb-search').focus();return;}
+  if(e.key==='Escape'&&document.activeElement===document.getElementById('sb-search')){document.getElementById('sb-search').value='';sbFilter('');document.getElementById('sb-search').blur();return;}
+});
+
+function showWelcome(){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-welcome').classList.add('active');
+  document.getElementById('home-btn').style.display='none';
+  const nPat=Object.keys(PATTERNS).length;
+  const nDS=DS_DATA.length;
+  const nProb=IV_PROBLEMS.length;
+  const el=id=>document.getElementById(id);
+  if(el('wlc-m-pat')) el('wlc-m-pat').textContent=nPat+' patterns';
+  if(el('wlc-m-ds')) el('wlc-m-ds').textContent=nDS+' structures · Big-O table';
+  document.getElementById('wlc-stats').innerHTML=`
+    <div class="wlc-stat"><div class="wlc-stat-num">${nPat}</div><div class="wlc-stat-label">Patterns</div></div>
+    <div class="wlc-stat"><div class="wlc-stat-num">${nDS}</div><div class="wlc-stat-label">Data Structures</div></div>
+    <div class="wlc-stat"><div class="wlc-stat-num">${nProb}</div><div class="wlc-stat-label">Problems</div></div>
+  `;
+}
+
+function showView(name,el){
+  const searchEl=document.getElementById('sb-search');
+  if(searchEl&&searchEl.value){searchEl.value='';sbFilter('');}
+  document.getElementById('home-btn').style.display='';
+  setNav(el);
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  if(name==='complexity')buildComplexity();
+  if(name==='approach')buildApproach();
+  if(name==='cheatsheet')buildTips();
+  if(name==='sorting')buildSorting();
+  if(name==='string-ref')buildStringRef();
+  if(name==='math-ref')buildMathRef();
+  if(name==='graph-ref')buildGraphRef();
+  if(name==='snippets')buildSnippets();
+  if(name==='studyplan')buildStudyPlan();
+  if(name==='interview')initIvFilters();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PATTERN RENDERER
+// ═══════════════════════════════════════════════════════════
+function showPattern(id,el){
+  const searchEl=document.getElementById('sb-search');
+  if(searchEl&&searchEl.value){searchEl.value='';sbFilter('');}
+  document.getElementById('home-btn').style.display='';
+  if(!el)el=document.querySelector(`.nav-item[onclick*="'${id}'"]`);
+  setNav(el);
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-pattern').classList.add('active');
+
+  const p=PATTERNS[id];
+  if(!p)return;
+  document.getElementById('pat-title').textContent=p.title;
+  document.getElementById('pat-sub').textContent=p.desc.substring(0,80)+'…';
+
+  // Connection bar — prereqs + related
+  const prereqs=(PAT_PREREQS[id]||[]).map(pid=>`<button class="conn-chip prereq" onclick="showPattern('${pid}',null)">prereq: ${PATTERNS[pid]?.title||pid}</button>`);
+  const related=(PAT_RELATED[id]||[]).map(rid=>`<button class="conn-chip" onclick="showPattern('${rid}',null)">${PATTERNS[rid]?.title||rid}</button>`);
+  const connHtml=[...prereqs,...related];
+  document.getElementById('pat-conn').innerHTML=connHtml.length?'<span class="conn-lbl">Related:</span>'+connHtml.join(''):'';
+
+  // Brute → optimal
+  const bto=PAT_BRUTE[id];
+  const btoHtml=bto?`
+    <div class="pd-section">
+      <div class="pd-section-title">Brute force → optimal</div>
+      <div class="bto-box">
+        <div class="bto-row"><div class="bto-label brute">Brute</div><div class="bto-text">${bto.brute}</div></div>
+        <div class="bto-row"><div class="bto-label optimal">Optimal</div><div class="bto-text">${bto.optimal}</div></div>
+        <div class="bto-row" style="margin-bottom:0"><div class="bto-label why">Why</div><div class="bto-text">${bto.why}</div></div>
+      </div>
+    </div>`:'';
+
+  // Prereqs section
+  const prereqList=PAT_PREREQS[id]||[];
+  const prereqHtml=prereqList.length?`
+    <div class="pd-section">
+      <div class="pd-section-title">Prerequisites — learn these first</div>
+      <div class="pd-problems">${prereqList.map(pid=>{const pp=PATTERNS[pid];return pp?`<div class="pd-problem" style="cursor:pointer" onclick="showPattern('${pid}',null)"><span class="diff m" style="background:var(--med-bg);color:var(--amber)">Prereq</span><span class="pname">${pp.title}</span></div>`:''}).join('')}</div>
+    </div>`:'';
+
+  const diffBadge=p.difficulty.includes('Easy')?'easy':p.difficulty.includes('Hard')?'hard':'med';
+  document.getElementById('pat-body').innerHTML=`
+    <div class="pd-header">
+      <div class="pd-title">${p.title}</div>
+      <div class="pd-sub">${p.desc}</div>
+      <div class="pd-badges"><span class="pd-badge ${diffBadge}">${p.difficulty}</span></div>
+    </div>
+
+    ${prereqHtml}
+
+    <div class="pd-section">
+      <div class="pd-section-title">How to recognize this pattern</div>
+      <div class="pd-signals">${p.signals.map(s=>`<div class="pd-signal">${s}</div>`).join('')}</div>
+    </div>
+
+    <div class="pd-section">
+      <div class="pd-section-title">When to use it</div>
+      <div class="pd-text">${p.when}</div>
+    </div>
+
+    ${btoHtml}
+
+    <div class="pd-section">
+      <div class="pd-section-title">Complexity</div>
+      <div class="pd-complexity">
+        <div class="pd-cx"><div class="pd-cx-label">Time</div><div class="pd-cx-val">${p.timeComplexity}</div></div>
+        <div class="pd-cx"><div class="pd-cx-label">Space</div><div class="pd-cx-val">${p.spaceComplexity}</div></div>
+      </div>
+    </div>
+
+    <div class="pd-section">
+      <div class="pd-section-title">Code template</div>
+      <div class="pd-code">${escHtml(p.template)}</div>
+    </div>
+
+    <div class="pd-section">
+      <div class="pd-section-title">Practice problems</div>
+      <div class="pd-problems">${p.problems.map(pr=>{
+        const lcLink=pr.id!=='--'?`<a class="plink" href="https://leetcode.com/problems/" target="_blank" rel="noopener">LC #${pr.id}</a>`:'';
+        const solveBtn=`<button class="plink" onclick="loadInApproach('${pr.name.replace(/'/g,"\\'")}','${id}')">→ Solve</button>`;
+        return`<div class="pd-problem"><span class="diff ${pr.diff==='e'?'e':pr.diff==='m'?'m':'h'}">${pr.diff==='e'?'Easy':pr.diff==='m'?'Med':'Hard'}</span><span class="pname">${pr.name}</span><span class="plinks">${lcLink}${solveBtn}</span></div>`;
+      }).join('')}</div>
+    </div>
+  `;
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ═══════════════════════════════════════════════════════════
+//  DS REFERENCE
+// ═══════════════════════════════════════════════════════════
+function showDS(id,el){
+  const searchEl=document.getElementById('sb-search');
+  if(searchEl&&searchEl.value){searchEl.value='';sbFilter('');}
+  document.getElementById('home-btn').style.display='';
+  if(!el)el=document.querySelector(`.nav-item[onclick*="'${id}'"]`);
+  setNav(el);
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-ds-ref').classList.add('active');
+
+  const d=DS_DATA.find(ds=>ds.id===id);
+  if(!d)return;
+  document.getElementById('ds-title').textContent=d.name;
+  document.getElementById('ds-sub').textContent=d.desc.substring(0,80)+'…';
+
+  const problemsHtml=d.problems?d.problems.map(pr=>{
+    const lcLink=pr.id?`<a class="plink" href="https://leetcode.com/problems/" target="_blank" rel="noopener">LC #${pr.id}</a>`:'';
+    return`<div class="pd-problem"><span class="diff ${pr.diff==='e'?'e':pr.diff==='m'?'m':'h'}">${pr.diff==='e'?'Easy':pr.diff==='m'?'Med':'Hard'}</span><span class="pname">${pr.name}</span><span class="plinks">${lcLink}</span></div>`;
+  }).join(''):'';
+
+  document.getElementById('ds-body').innerHTML=`
+    <div class="pd-header">
+      <div class="pd-title">${d.name}</div>
+      <div class="pd-sub">${d.desc}</div>
+    </div>
+
+    ${(DS_PATTERNS[id]||[]).length?`<div class="pd-section">
+      <div class="pd-section-title">Used in these patterns</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">${(DS_PATTERNS[id]||[]).map(pid=>`<button class="conn-chip" onclick="showPattern('${pid}',null)">${PATTERNS[pid]?.title||pid}</button>`).join('')}</div>
+    </div>`:''}
+
+    <div class="pd-section">
+      <div class="pd-section-title">Operations & Complexity</div>
+      <div class="ds-ops">${Object.entries(d.ops).map(([k,v])=>`<div class="ds-op"><div class="ds-op-name">${k}</div><div class="ds-op-val">${v}</div></div>`).join('')}</div>
+    </div>
+
+    <div class="pd-section">
+      <div class="pd-section-title">When to use it</div>
+      <div class="ds-when">${d.when}</div>
+    </div>
+
+    ${d.howItWorks?`<div class="pd-section">
+      <div class="pd-section-title">How it works</div>
+      <div class="pd-text">${d.howItWorks}</div>
+    </div>`:''}
+
+    ${d.tricks?`<div class="pd-section">
+      <div class="pd-section-title">Interview tricks</div>
+      <div class="pd-signals">${d.tricks.map(t=>`<div class="pd-signal">${t}</div>`).join('')}</div>
+    </div>`:''}
+
+    ${d.problems?`<div class="pd-section">
+      <div class="pd-section-title">Practice problems</div>
+      <div class="pd-problems">${problemsHtml}</div>
+    </div>`:''}
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  COMPLEXITY CHEAT SHEET
+// ═══════════════════════════════════════════════════════════
+function buildComplexity(){
+  const el=document.getElementById('cx-body');
+  const rows=[
+    ['O(1)','Constant','HashMap lookup, array access, push/pop','cx-good'],
+    ['O(log n)','Logarithmic','Binary search, balanced BST ops','cx-good'],
+    ['O(n)','Linear','Single loop, linear scan, two pointers','cx-good'],
+    ['O(n log n)','Linearithmic','Sorting (merge sort, heap sort)','cx-ok'],
+    ['O(n²)','Quadratic','Nested loops, brute force pairs','cx-bad'],
+    ['O(n³)','Cubic','Triple nested loops','cx-bad'],
+    ['O(2ⁿ)','Exponential','Subsets, backtracking without pruning','cx-bad'],
+    ['O(n!)','Factorial','Permutations, brute force TSP','cx-bad'],
+  ];
+  const scale=[
+    ['10','All work','','','',''],
+    ['100','All work','','','~10ms',''],
+    ['1,000','All work','','','~1s','Too slow'],
+    ['10,000','All work','','~1s','~100s','Too slow'],
+    ['100,000','All work','O(n log n) limit','Too slow','Too slow','Too slow'],
+    ['1,000,000','O(n) or O(n log n)','Borderline','Too slow','Too slow','Too slow'],
+  ];
+  el.innerHTML=`
+    <div class="sec-head" style="color:var(--accent)">Complexity classes</div>
+    <table class="cx-table">
+      <thead><tr><th>Big-O</th><th>Name</th><th>Example</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr><td class="${r[3]}" style="font-weight:700">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody>
+    </table>
+    <div class="sec-head" style="color:var(--amber);margin-top:24px">What's fast enough? (n = input size, ~1 second budget)</div>
+    <table class="cx-table">
+      <thead><tr><th>n</th><th>O(n)</th><th>O(n log n)</th><th>O(n²)</th><th>O(n³)</th><th>O(2ⁿ)</th></tr></thead>
+      <tbody>${scale.map(r=>`<tr><td style="font-weight:600">${r[0]}</td>${r.slice(1).map(c=>`<td class="${c==='Too slow'?'cx-bad':c.includes('limit')||c==='Borderline'?'cx-ok':c?'cx-good':''}">${c||'Fine'}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>
+    <div class="sec-head" style="color:var(--ds);margin-top:24px">Quick decision guide</div>
+    <div class="ds-when" style="margin-bottom:10px">n ≤ 20 → O(2ⁿ) or O(n!) is fine (backtracking, brute force)</div>
+    <div class="ds-when" style="margin-bottom:10px">n ≤ 1,000 → O(n²) is fine (nested loops, DP with two dimensions)</div>
+    <div class="ds-when" style="margin-bottom:10px">n ≤ 100,000 → need O(n log n) or better (sort + scan, binary search)</div>
+    <div class="ds-when" style="margin-bottom:10px">n ≤ 1,000,000 → need O(n) or O(n log n) (hash maps, two pointers, sliding window)</div>
+    <div class="ds-when">n > 1,000,000 → need O(n) or O(log n) (linear scan, binary search, math trick)</div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  APPROACH BUILDER
+// ═══════════════════════════════════════════════════════════
+let approachState={problem:'',constraints:'',category:'',pattern:'',plan:'',edgeCases:'',complexity:''};
+function buildApproach(){
+  const f=document.getElementById('approach-form');
+  const patChips=Object.entries(PATTERNS).map(([k,v])=>`<button class="suggest-chip${approachState.pattern===k?' selected':''}" onclick="approachState.pattern='${k}';buildApproach()">${v.title}</button>`).join('');
+  const catChips=['Array','String','Linked List','Tree','Graph','Matrix','Math','Bit Manipulation'].map(c=>`<button class="suggest-chip${approachState.category===c?' selected':''}" onclick="approachState.category='${c}';buildApproach()">${c}</button>`).join('');
+
+  f.innerHTML=`
+    <div class="phase-step"><div class="phase-num active">1</div><div class="phase-title">Understand the problem</div></div>
+    <div class="field-group">
+      <div class="field-label">Problem statement (in your own words)</div>
+      <textarea class="cl-input ta" placeholder="Restate the problem. What's the input? What's the output?" oninput="approachState.problem=this.value;renderApproach()">${approachState.problem}</textarea>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Constraints</div>
+      <textarea class="cl-input ta" style="min-height:48px" placeholder="Array size? Value range? Sorted? Duplicates? Return type?" oninput="approachState.constraints=this.value;renderApproach()">${approachState.constraints}</textarea>
+    </div>
+
+    <div class="phase-step" style="margin-top:8px"><div class="phase-num active">2</div><div class="phase-title">Classify & pattern match</div></div>
+    <div class="field-group">
+      <div class="field-label">Category</div>
+      <div class="suggest-chips">${catChips}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Which pattern fits?</div>
+      <div class="suggest-chips" style="max-height:120px;overflow-y:auto">${patChips}</div>
+    </div>
+
+    <div class="phase-step" style="margin-top:8px"><div class="phase-num active">3</div><div class="phase-title">Plan your approach</div></div>
+    <div class="field-group">
+      <div class="field-label">Step-by-step plan (before coding)</div>
+      <textarea class="cl-input ta" placeholder="1. Sort the array&#10;2. Use two pointers from both ends&#10;3. If sum < target, move left pointer&#10;4. If sum > target, move right pointer" oninput="approachState.plan=this.value;renderApproach()">${approachState.plan}</textarea>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Edge cases to handle</div>
+      <textarea class="cl-input ta" style="min-height:48px" placeholder="Empty array? Single element? All duplicates? No valid answer?" oninput="approachState.edgeCases=this.value;renderApproach()">${approachState.edgeCases}</textarea>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Complexity analysis</div>
+      <textarea class="cl-input ta" style="min-height:48px" placeholder="Time: O(n) — single pass with two pointers&#10;Space: O(1) — only pointer variables" oninput="approachState.complexity=this.value;renderApproach()">${approachState.complexity}</textarea>
+    </div>
+  `;
+  renderApproach();
+}
+function renderApproach(){
+  const s=approachState;
+  const el=document.getElementById('approach-preview');
+  if(!s.problem&&!s.pattern){
+    el.innerHTML='<div style="margin:auto;text-align:center;color:var(--text3);font-size:13px;line-height:2.4"><div style="font-size:24px;opacity:.3;margin-bottom:4px">🧠</div>Start describing the problem.<br>Your approach builds here as you think.</div>';
+    return;
+  }
+  const e=str=>escHtml(str);
+  const pat=PATTERNS[s.pattern];
+  el.innerHTML=`<div class="ap-card">
+    <h2>Approach</h2>
+    <h3>Problem</h3><p>${s.problem?e(s.problem):'<span class="ap-empty">Describe the problem...</span>'}</p>
+    ${s.constraints?'<h3>Constraints</h3><p>'+e(s.constraints)+'</p>':''}
+    ${s.category?'<h3>Category</h3><p>'+e(s.category)+'</p>':''}
+    ${pat?'<h3>Pattern</h3><p><strong>'+pat.title+'</strong> — '+pat.desc+'</p>':''}
+    ${s.plan?'<h3>Plan</h3><p style="white-space:pre-wrap">'+e(s.plan)+'</p>':''}
+    ${s.edgeCases?'<h3>Edge Cases</h3><p style="white-space:pre-wrap">'+e(s.edgeCases)+'</p>':''}
+    ${s.complexity?'<h3>Complexity</h3><p style="white-space:pre-wrap">'+e(s.complexity)+'</p>':''}
+    ${pat?'<h3>Code Template</h3><div class="pd-code" style="font-size:11px">'+escHtml(pat.template)+'</div>':''}
+  </div>`;
+}
+function loadInApproach(problemName,patternId){
+  approachState={problem:problemName,constraints:'',category:'',pattern:patternId,plan:'',edgeCases:'',complexity:''};
+  showView('approach',null);
+}
+function resetApproach(){
+  approachState={problem:'',constraints:'',category:'',pattern:'',plan:'',edgeCases:'',complexity:''};
+  buildApproach();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INTERVIEW SIMULATOR
+// ═══════════════════════════════════════════════════════════
+let ivInterval=null,ivSeconds=45*60,ivActive=false;
+let ivDiffFilter='All',ivPatFilter='All';
+
+function setIvFilter(type,val,btn){
+  if(type==='diff'){
+    ivDiffFilter=val;
+    btn.parentElement.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+function initIvFilters(){
+  const sel=document.getElementById('iv-pat-filter');
+  if(sel&&sel.options.length<=1){
+    const pats=[...new Set(IV_PROBLEMS.map(p=>p.pattern))].sort();
+    pats.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
+  }
+}
+function getFilteredProblems(){
+  return IV_PROBLEMS.filter(p=>{
+    if(ivDiffFilter!=='All'&&p.diff!==ivDiffFilter)return false;
+    if(ivPatFilter!=='All'&&!p.pattern.includes(ivPatFilter))return false;
+    return true;
+  });
+}
+function ivStart(){
+  if(ivActive)return;
+  ivActive=true;
+  ivSeconds=45*60;
+  document.getElementById('iv-start').style.display='none';
+  document.getElementById('iv-stop').style.display='';
+  ivNew();
+  ivInterval=setInterval(()=>{
+    ivSeconds--;
+    if(ivSeconds<=0){ivStop();return;}
+    const m=Math.floor(ivSeconds/60),s=ivSeconds%60;
+    const timer=document.getElementById('iv-timer');
+    timer.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    timer.className='timer'+(ivSeconds<300?' danger':ivSeconds<900?' warn':'');
+  },1000);
+  document.getElementById('iv-prompt').textContent='Talk through your approach before coding';
+}
+function ivStop(){
+  ivActive=false;
+  clearInterval(ivInterval);
+  document.getElementById('iv-start').style.display='';
+  document.getElementById('iv-stop').style.display='none';
+  document.getElementById('iv-prompt').textContent='Session ended. Review your approach.';
+}
+function ivNew(){
+  const pool=getFilteredProblems();
+  if(!pool.length){document.getElementById('iv-body').innerHTML='<div style="margin:auto;text-align:center;color:var(--text3)">No problems match these filters. Try broadening your selection.</div>';return;}
+  const prob=pool[Math.floor(Math.random()*pool.length)];
+  const diffClass=prob.diff==='Easy'?'easy':prob.diff==='Hard'?'hard':'med';
+  document.getElementById('iv-body').innerHTML=`
+    <div class="iv-problem">
+      <h3>${prob.title} <span class="pd-badge ${diffClass}" style="font-size:10px;vertical-align:middle;margin-left:6px">${prob.diff}</span></h3>
+      <p>${prob.desc}</p>
+      <p style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--mono)">Pattern hint: ${prob.pattern}</p>
+    </div>
+    <div class="iv-checklist">
+      <h4>Thinking checklist</h4>
+      <label class="iv-check"><input type="checkbox"/> Restated the problem in my own words</label>
+      <label class="iv-check"><input type="checkbox"/> Asked clarifying questions (edge cases, constraints)</label>
+      <label class="iv-check"><input type="checkbox"/> Described brute force approach + its complexity</label>
+      <label class="iv-check"><input type="checkbox"/> Identified the optimal pattern</label>
+      <label class="iv-check"><input type="checkbox"/> Walked through approach on a small example</label>
+      <label class="iv-check"><input type="checkbox"/> Coded the solution</label>
+      <label class="iv-check"><input type="checkbox"/> Tested with edge cases (empty, single, duplicates)</label>
+      <label class="iv-check"><input type="checkbox"/> Stated time and space complexity</label>
+    </div>
+    <div class="iv-checklist">
+      <h4>Hints (try to solve before looking)</h4>
+      ${prob.hints.map((h,i)=>`<div style="padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px;font-size:12px;color:var(--text2);cursor:pointer"><span style="color:var(--text3)">${i+1}.</span> <span style="filter:blur(4px);transition:filter .2s;display:inline-block" onmouseover="this.style.filter='none'" onmouseout="this.style.filter='blur(4px)'">${h}</span></div>`).join('')}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PATTERN RECOGNITION QUIZ
+// ═══════════════════════════════════════════════════════════
+// Pattern name → ID lookup for quiz feedback
+const PAT_NAME_TO_ID={};
+for(const[id,p]of Object.entries(PATTERNS)){PAT_NAME_TO_ID[p.title]=id;}
+// Also map short names used in IV_PROBLEMS
+Object.assign(PAT_NAME_TO_ID,{
+  'BFS':'bfs','DFS':'dfs','Backtracking':'backtracking','Binary Search':'binary-search',
+  'Top K / Heap':'top-k','Trie':'trie','Union-Find':'union-find',
+  'DFS / Topological Sort':'dfs','Trie + Backtracking':'trie',
+  'HashMap + Linked List':'two-pointers','HashMap':'prefix-sum',
+  'Stack':'monotonic-stack','Heap / QuickSelect':'top-k',
+  "Kadane's Algorithm":'kadanes',
+});
+
+let quizScore=0,quizTotal=0,quizAnswered=false,quizCurrentProblem=null;
+
+function quizNew(){
+  quizAnswered=false;
+  const pool=IV_PROBLEMS.filter(p=>p!==quizCurrentProblem);
+  quizCurrentProblem=pool[Math.floor(Math.random()*pool.length)];
+  const prob=quizCurrentProblem;
+
+  // Pick 4 wrong answers + 1 correct, shuffle
+  const allPatterns=[...new Set(IV_PROBLEMS.map(p=>p.pattern))];
+  const correct=prob.pattern;
+  const wrongs=allPatterns.filter(p=>p!==correct).sort(()=>Math.random()-.5).slice(0,4);
+  const choices=[correct,...wrongs].sort(()=>Math.random()-.5);
+
+  const el=document.getElementById('quiz-body');
+  el.innerHTML=`
+    <div class="quiz-score">
+      <div><div class="quiz-score-num">${quizTotal?Math.round(quizScore/quizTotal*100):0}%</div><div class="quiz-score-label">Accuracy</div></div>
+      <div><div class="quiz-score-num">${quizScore}/${quizTotal}</div><div class="quiz-score-label">Correct</div></div>
+      <div class="quiz-progress" style="margin-left:auto">Problem ${quizTotal+1}</div>
+    </div>
+    <div class="quiz-card">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:8px">${prob.diff}</div>
+      <div class="quiz-problem">${prob.desc}</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px">Which pattern best solves this problem?</div>
+      <div class="quiz-choices" id="quiz-choices">
+        ${choices.map(c=>`<button class="quiz-choice" onclick="quizAnswer(this,'${c.replace(/'/g,"\\'")}','${correct.replace(/'/g,"\\'")}')">${c}</button>`).join('')}
+      </div>
+      <div id="quiz-feedback"></div>
+    </div>
+  `;
+}
+
+function quizAnswer(btn,selected,correct){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  quizTotal++;
+  const isCorrect=selected===correct;
+  if(isCorrect)quizScore++;
+
+  // Mark all buttons
+  document.querySelectorAll('#quiz-choices .quiz-choice').forEach(b=>{
+    b.style.pointerEvents='none';
+    if(b.textContent===correct)b.classList.add('correct');
+    else if(b===btn&&!isCorrect)b.classList.add('wrong');
+  });
+
+  // Find the trigger signals for this pattern
+  const patId=PAT_NAME_TO_ID[correct];
+  const pat=patId?PATTERNS[patId]:null;
+  const signals=pat?pat.signals.slice(0,2).map(s=>s.replace(/<\/?em>/g,'')).join(' | '):'';
+
+  document.getElementById('quiz-feedback').innerHTML=isCorrect
+    ?`<div class="quiz-result right">✓ Correct! <strong>${correct}</strong>${signals?' — signals: '+signals:''}</div>`
+    :`<div class="quiz-result wrong">✗ The answer is <strong>${correct}</strong>, not ${selected}.${signals?'<br>Signals: '+signals:''}</div>`;
+
+  // Update score display
+  document.querySelector('.quiz-score-num').textContent=Math.round(quizScore/quizTotal*100)+'%';
+  document.querySelectorAll('.quiz-score-num')[1].textContent=quizScore+'/'+quizTotal;
+}
+
+function quizReset(){
+  quizScore=0;quizTotal=0;quizCurrentProblem=null;
+  quizNew();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  STUDY PLAN
+// ═══════════════════════════════════════════════════════════
+function buildStudyPlan(){
+  const weeks=[
+    {week:1,title:'Foundations — Arrays, HashMap, Two Pointers, Sliding Window',days:[
+      {d:'Day 1-2',items:[{l:'Array',t:'ds',a:"showDS('array',null)"},{l:'HashMap',t:'ds',a:"showDS('hashmap',null)"},{l:'Big-O Cheat Sheet',t:'ref',a:"showView('complexity',null)"}]},
+      {d:'Day 3-4',items:[{l:'Two Pointers',t:'pat',a:"showPattern('two-pointers',null)"},{l:'Sliding Window',t:'pat',a:"showPattern('sliding-window',null)"},{l:'Prefix Sum',t:'pat',a:"showPattern('prefix-sum',null)"}]},
+      {d:'Day 5-6',items:[{l:'Binary Search',t:'pat',a:"showPattern('binary-search',null)"},{l:'Kadane\'s',t:'pat',a:"showPattern('kadanes',null)"},{l:'String Tricks',t:'ref',a:"showView('string-ref',null)"}]},
+      {d:'Day 7',items:[{l:'Practice quiz',t:'ref',a:"showView('quiz',null)"},{l:'Review weak patterns',t:'ref',a:""}]},
+    ]},
+    {week:2,title:'Stacks, Queues, Linked Lists, Trees',days:[
+      {d:'Day 1-2',items:[{l:'Stack',t:'ds',a:"showDS('stack',null)"},{l:'Queue',t:'ds',a:"showDS('queue',null)"},{l:'Monotonic Stack',t:'pat',a:"showPattern('monotonic-stack',null)"}]},
+      {d:'Day 3-4',items:[{l:'Linked List',t:'ds',a:"showDS('linkedlist',null)"},{l:'Fast & Slow',t:'pat',a:"showPattern('fast-slow',null)"},{l:'Merge Intervals',t:'pat',a:"showPattern('merge-intervals',null)"}]},
+      {d:'Day 5-6',items:[{l:'Binary Tree',t:'ds',a:"showDS('bintree',null)"},{l:'BST',t:'ds',a:"showDS('bst',null)"},{l:'BFS',t:'pat',a:"showPattern('bfs',null)"},{l:'DFS',t:'pat',a:"showPattern('dfs',null)"}]},
+      {d:'Day 7',items:[{l:'Interview sim (Medium only)',t:'ref',a:"showView('interview',null)"},{l:'Practice quiz',t:'ref',a:"showView('quiz',null)"}]},
+    ]},
+    {week:3,title:'Heap, Backtracking, Dynamic Programming, Greedy',days:[
+      {d:'Day 1-2',items:[{l:'Heap',t:'ds',a:"showDS('heap',null)"},{l:'Top K',t:'pat',a:"showPattern('top-k',null)"},{l:'Two Heaps',t:'pat',a:"showPattern('two-heaps',null)"},{l:'K-way Merge',t:'pat',a:"showPattern('k-way-merge',null)"}]},
+      {d:'Day 3-4',items:[{l:'Backtracking',t:'pat',a:"showPattern('backtracking',null)"},{l:'Greedy',t:'pat',a:"showPattern('greedy',null)"},{l:'Cyclic Sort',t:'pat',a:"showPattern('cyclic-sort',null)"}]},
+      {d:'Day 5-6',items:[{l:'Dynamic Programming',t:'pat',a:"showPattern('dp',null)"},{l:'Math & Formulas',t:'ref',a:"showView('math-ref',null)"},{l:'Code Snippets',t:'ref',a:"showView('snippets',null)"}]},
+      {d:'Day 7',items:[{l:'Interview sim (Hard only)',t:'ref',a:"showView('interview',null)"},{l:'Practice quiz',t:'ref',a:"showView('quiz',null)"}]},
+    ]},
+    {week:4,title:'Graphs, Advanced Patterns, Full Mock Interviews',days:[
+      {d:'Day 1-2',items:[{l:'Graph',t:'ds',a:"showDS('graph',null)"},{l:'Topological Sort',t:'pat',a:"showPattern('topo-sort',null)"},{l:'Graph Algorithms',t:'ref',a:"showView('graph-ref',null)"}]},
+      {d:'Day 3-4',items:[{l:'Union-Find',t:'pat',a:"showPattern('union-find',null)"},{l:'Trie',t:'pat',a:"showPattern('trie',null)"},{l:'Bit Manipulation',t:'pat',a:"showPattern('bit-manipulation',null)"}]},
+      {d:'Day 5',items:[{l:'Sorting Algorithms',t:'ref',a:"showView('sorting',null)"},{l:'Pattern quiz (all)',t:'ref',a:"showView('quiz',null)"},{l:'Review weakest patterns',t:'ref',a:""}]},
+      {d:'Day 6-7',items:[{l:'Full mock interview (45 min)',t:'ref',a:"showView('interview',null)"},{l:'Review Approach Builder notes',t:'ref',a:"showView('approach',null)"},{l:'Quick Tips',t:'ref',a:"showView('cheatsheet',null)"}]},
+    ]},
+  ];
+  document.getElementById('studyplan-body').innerHTML=weeks.map(w=>`
+    <div class="sp-week">
+      <div class="sp-week-hdr"><span class="sp-week-num">Week ${w.week}</span>${w.title}</div>
+      ${w.days.map(d=>`<div class="sp-day">
+        <div class="sp-day-label">${d.d}</div>
+        <div class="sp-day-items">${d.items.map(i=>i.a?`<button class="sp-link ${i.t}" onclick="${i.a}">${i.l}</button>`:`<span class="sp-link ref" style="cursor:default">${i.l}</span>`).join('')}</div>
+      </div>`).join('')}
+    </div>
+  `).join('')+`
+    <div class="ds-when" style="margin-top:8px">Adjust the pace to fit your timeline. The key is covering all 21 patterns, not speed. Spend extra time on patterns where the quiz shows weakness.</div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TIPS
+// ═══════════════════════════════════════════════════════════
+function buildTips(){
+  const el=document.getElementById('tips-body');
+  el.innerHTML=TIPS.map(cat=>`
+    <div class="sec-head" style="color:var(--accent)">${cat.cat}</div>
+    ${cat.items.map(t=>`<div class="ds-card"><div class="ds-card-title">${t.title}</div><div class="ds-card-desc">${t.desc}</div></div>`).join('')}
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SORTING ALGORITHMS
+// ═══════════════════════════════════════════════════════════
+function buildSorting(){
+  const sorts=[
+    {name:'Bubble Sort',time:'O(n²)',best:'O(n)',space:'O(1)',stable:'Yes',desc:'Compare adjacent pairs, swap if out of order. Repeat until no swaps. Only useful if the array is nearly sorted (O(n) best case). Never use in interviews unless asked specifically.',use:'Never — unless demonstrating you know it exists.'},
+    {name:'Selection Sort',time:'O(n²)',best:'O(n²)',space:'O(1)',stable:'No',desc:'Find the minimum, swap it to position 0. Find the next minimum, swap to position 1. Repeat. Always O(n²) regardless of input.',use:'Never in practice. Sometimes as a warm-up explanation before optimizing.'},
+    {name:'Insertion Sort',time:'O(n²)',best:'O(n)',space:'O(1)',stable:'Yes',desc:'Build a sorted portion from left to right. Each new element is inserted into its correct position in the sorted portion. Very fast on nearly sorted data.',use:'Small arrays (n < 50), nearly sorted data, or as the base case in hybrid sorts like Timsort.'},
+    {name:'Merge Sort',time:'O(n log n)',best:'O(n log n)',space:'O(n)',stable:'Yes',desc:'Divide array in half recursively until single elements, then merge sorted halves back together. Guaranteed O(n log n) regardless of input. The go-to when stability matters.',use:'When you need guaranteed O(n log n) and stability. Linked lists (O(1) space merge). External sorting (data too large for memory).'},
+    {name:'Quick Sort',time:'O(n log n)',best:'O(n log n)',space:'O(log n)',stable:'No',desc:'Pick a pivot, partition array into elements smaller and larger than pivot, recurse on both halves. O(n²) worst case with bad pivot, but O(n log n) average with randomized pivot.',use:'Default in most language libraries (with optimizations). Best average-case performance. QuickSelect for Kth element.'},
+    {name:'Heap Sort',time:'O(n log n)',best:'O(n log n)',space:'O(1)',stable:'No',desc:'Build a max-heap from the array, then repeatedly extract the max and place at the end. Guaranteed O(n log n) with O(1) extra space, but poor cache performance.',use:'When you need O(n log n) guaranteed with O(1) space. Rarely the best choice in practice — merge sort or quick sort usually preferred.'},
+    {name:'Counting Sort',time:'O(n + k)',best:'O(n + k)',space:'O(k)',stable:'Yes',desc:'Count occurrences of each value, then reconstruct. Only works when values are integers in a known range [0, k]. Not comparison-based.',use:'When values are in a small range (e.g., ages 0-150, ASCII chars 0-127). Radix sort uses this internally.'},
+    {name:'Bucket Sort',time:'O(n + k)',best:'O(n)',space:'O(n)',stable:'Yes',desc:'Distribute elements into buckets, sort each bucket, concatenate. Works best when input is uniformly distributed.',use:'Uniformly distributed floating-point numbers. Top K frequent elements (frequency buckets).'},
+  ];
+  const el=document.getElementById('sorting-body');
+  el.innerHTML=`
+    <div class="sec-head" style="color:var(--accent)">Comparison table</div>
+    <table class="cx-table">
+      <thead><tr><th>Algorithm</th><th>Average</th><th>Best</th><th>Space</th><th>Stable</th></tr></thead>
+      <tbody>${sorts.map(s=>`<tr><td style="font-weight:600">${s.name}</td><td class="${s.time.includes('n²')?'cx-bad':'cx-good'}">${s.time}</td><td class="${s.best.includes('n²')?'cx-bad':s.best==='O(n)'?'cx-good':'cx-ok'}">${s.best}</td><td>${s.space}</td><td>${s.stable}</td></tr>`).join('')}</tbody>
+    </table>
+    <div class="sec-head" style="color:var(--amber);margin-top:24px">When to use which</div>
+    ${sorts.map(s=>`<div class="ds-card"><div class="ds-card-title">${s.name} <span style="font-size:10px;font-family:var(--mono);color:var(--text3);font-weight:400">${s.time}</span></div><div class="ds-card-desc">${s.desc}</div><div class="ds-when">${s.use}</div></div>`).join('')}
+    <div class="sec-head" style="color:var(--ds);margin-top:24px">Quick decision guide</div>
+    <div class="ds-when" style="margin-bottom:10px">Need stable sort? → Merge Sort</div>
+    <div class="ds-when" style="margin-bottom:10px">Default / general purpose? → Quick Sort (randomized pivot)</div>
+    <div class="ds-when" style="margin-bottom:10px">Integers in small range? → Counting Sort or Bucket Sort</div>
+    <div class="ds-when" style="margin-bottom:10px">Nearly sorted data? → Insertion Sort</div>
+    <div class="ds-when" style="margin-bottom:10px">Linked list? → Merge Sort (O(1) extra space for lists)</div>
+    <div class="ds-when" style="margin-bottom:10px">Need Kth element without full sort? → QuickSelect O(n) average</div>
+    <div class="ds-when">In an interview, just say "sort" → language built-in is O(n log n) and that's fine</div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  STRING TRICKS
+// ═══════════════════════════════════════════════════════════
+function buildStringRef(){
+  document.getElementById('string-body').innerHTML=`
+    <div class="sec-head" style="color:var(--accent)">Common string operations (JavaScript)</div>
+    <div class="pd-code">// Character frequency count
+const freq = {};
+for (const ch of str) freq[ch] = (freq[ch] || 0) + 1;
+
+// Check if two strings are anagrams
+const isAnagram = (a, b) =>
+  a.split('').sort().join('') === b.split('').sort().join('');
+
+// Reverse a string
+const rev = str.split('').reverse().join('');
+
+// Check palindrome
+const isPalin = s => s === s.split('').reverse().join('');
+
+// Get char code (for 'a'-'z' indexing)
+const idx = ch.charCodeAt(0) - 'a'.charCodeAt(0); // 0-25
+
+// Convert char code back to char
+const ch = String.fromCharCode(97 + idx); // 'a'-'z'
+
+// Substring vs slice (both work, slice handles negatives)
+str.substring(start, end);  // no negative indices
+str.slice(start, end);      // supports negative indices</div>
+
+    <div class="sec-head" style="color:var(--amber);margin-top:24px">String patterns that come up constantly</div>
+    <div class="ds-card"><div class="ds-card-title">Two-pointer palindrome check</div><div class="ds-card-desc">Start from both ends, move inward, compare characters. Skip non-alphanumeric if needed. O(n) time, O(1) space — better than reverse + compare.</div></div>
+    <div class="ds-card"><div class="ds-card-title">Sliding window on strings</div><div class="ds-card-desc">Use a frequency map as the window state. Expand right to include, shrink left when constraint is violated. Works for: longest substring without repeats, minimum window substring, anagram finding.</div></div>
+    <div class="ds-card"><div class="ds-card-title">Character frequency with array[26]</div><div class="ds-card-desc">For lowercase English letters, use an array of 26 instead of a HashMap. Index = charCode - 97. Faster and cleaner. Compare two frequency arrays to check anagrams.</div></div>
+    <div class="ds-card"><div class="ds-card-title">StringBuilder pattern</div><div class="ds-card-desc">In JavaScript, string concatenation in a loop is O(n²) total. Use an array and join at the end: push chars to array, then array.join(''). In Java/C++, use StringBuilder/ostringstream.</div></div>
+    <div class="ds-card"><div class="ds-card-title">String to number / number to string</div><div class="ds-card-desc">parseInt('42') or +'42' or Number('42'). Watch for NaN. For digit-by-digit: charCode - 48 gives the digit. Build number: num = num * 10 + digit.</div></div>
+
+    <div class="sec-head" style="color:var(--ds);margin-top:24px">Common gotchas</div>
+    <div class="pd-signal">Strings are <em>immutable</em> in JS/Java/Python — every modification creates a new string. Build with arrays.</div>
+    <div class="pd-signal" style="margin-top:6px"><em>Empty string</em> is the #1 edge case. Always check str.length === 0 first.</div>
+    <div class="pd-signal" style="margin-top:6px"><em>Unicode</em>: 'café'.length === 5 in JS (é is two code units). Usually interviews stick to ASCII, but ask.</div>
+    <div class="pd-signal" style="margin-top:6px"><em>Case sensitivity</em>: always ask "is the input case-sensitive?" Convert to lowercase first if not.</div>
+    <div class="pd-signal" style="margin-top:6px"><em>Spaces and punctuation</em>: "ignore non-alphanumeric" means you need a filter: ch.match(/[a-zA-Z0-9]/)</div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MATH & FORMULAS
+// ═══════════════════════════════════════════════════════════
+function buildMathRef(){
+  document.getElementById('math-body').innerHTML=`
+    <div class="sec-head" style="color:var(--accent)">Formulas that come up in interviews</div>
+    <div class="pd-code">// GCD (Greatest Common Divisor) — Euclidean algorithm
+function gcd(a, b) {
+  while (b) [a, b] = [b, a % b];
+  return a;
+}
+// LCM = (a * b) / gcd(a, b)
+
+// Check if prime
+function isPrime(n) {
+  if (n < 2) return false;
+  for (let i = 2; i * i <= n; i++) {
+    if (n % i === 0) return false;
+  }
+  return true; // Only check up to √n
+}
+
+// Fast exponentiation: a^n mod m
+function powMod(a, n, m) {
+  let result = 1;
+  a %= m;
+  while (n > 0) {
+    if (n & 1) result = (result * a) % m;
+    n >>= 1;
+    a = (a * a) % m;
+  }
+  return result;
+}
+
+// Sum of 1..n
+const sumN = n => n * (n + 1) / 2;
+
+// Combinations: C(n, k) = n! / (k! * (n-k)!)
+// For interviews, often computed with DP (Pascal's triangle)
+
+// Fibonacci with matrix exponentiation: O(log n)
+// But for interviews, simple DP O(n) is fine</div>
+
+    <div class="sec-head" style="color:var(--amber);margin-top:24px">Number tricks</div>
+    <div class="ds-card"><div class="ds-card-title">Extract digits</div><div class="ds-card-desc">Last digit: n % 10. Remove last digit: Math.floor(n / 10). Reverse a number: repeatedly extract last digit and build from front. Watch for negative numbers and overflow.</div></div>
+    <div class="ds-card"><div class="ds-card-title">Modular arithmetic</div><div class="ds-card-desc">(a + b) % m = ((a % m) + (b % m)) % m. Same for multiplication. Used when answer "could be large, return mod 10^9+7." Apply mod at every step to prevent overflow.</div></div>
+    <div class="ds-card"><div class="ds-card-title">Sum of arithmetic series</div><div class="ds-card-desc">Sum of 1 to n = n(n+1)/2. Sum of a to b = sum(b) - sum(a-1). This is how you find a missing number: expected sum - actual sum = missing number.</div></div>
+    <div class="ds-card"><div class="ds-card-title">Powers of 2</div><div class="ds-card-desc">1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024. Check: n & (n-1) === 0. Next power: 1 << Math.ceil(Math.log2(n)). Appears in binary/bit problems.</div></div>
+    <div class="ds-card"><div class="ds-card-title">Floor division and ceiling</div><div class="ds-card-desc">Floor: Math.floor(a / b). Ceiling without Math.ceil: Math.floor((a + b - 1) / b). Integer division in JS needs Math.floor or Math.trunc (negative numbers differ).</div></div>
+
+    <div class="sec-head" style="color:var(--ds);margin-top:24px">Combinatorics that appear in DP</div>
+    <div class="ds-when" style="margin-bottom:10px">Unique paths in grid: C(m+n-2, m-1) or DP table</div>
+    <div class="ds-when" style="margin-bottom:10px">Number of subsets of size k: C(n, k) — use DP, not factorial (overflow)</div>
+    <div class="ds-when" style="margin-bottom:10px">Catalan numbers (valid parentheses, BST count): C(n) = C(2n, n) / (n+1)</div>
+    <div class="ds-when" style="margin-bottom:10px">Pascal's triangle row n, col k = C(n, k) — build row by row</div>
+    <div class="ds-when">Permutations: n! / (n-k)! — order matters. Combinations: n! / (k!(n-k)!) — order doesn't</div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  GRAPH ALGORITHMS
+// ═══════════════════════════════════════════════════════════
+function buildGraphRef(){
+  const algos=[
+    {name:'BFS',when:'Shortest path (unweighted), level-order, minimum steps',time:'O(V+E)',space:'O(V)',notes:'Uses a queue. Guarantees shortest path in unweighted graphs. Multi-source BFS starts from multiple nodes simultaneously.'},
+    {name:'DFS',when:'Path existence, connected components, cycle detection, topological sort',time:'O(V+E)',space:'O(V)',notes:'Uses stack (or recursion). Explores as deep as possible before backtracking. Three states for cycle detection: unvisited, visiting, visited.'},
+    {name:'Topological Sort (Kahn)',when:'Task ordering with dependencies, course schedule, build order',time:'O(V+E)',space:'O(V)',notes:'BFS-based. Process nodes with 0 in-degree first. If not all nodes processed, graph has a cycle.'},
+    {name:'Dijkstra',when:'Shortest path in weighted graph (non-negative weights)',time:'O((V+E) log V)',space:'O(V)',notes:'Greedy + min-heap. Relax edges from the closest unvisited node. Fails with negative weights — use Bellman-Ford instead.'},
+    {name:'Bellman-Ford',when:'Shortest path with negative weights, detect negative cycles',time:'O(V × E)',space:'O(V)',notes:'Relax all edges V-1 times. If any edge still relaxes on Vth pass, negative cycle exists. Slower than Dijkstra but handles negatives.'},
+    {name:'Union-Find',when:'Dynamic connectivity, count components, detect cycles in undirected graph',time:'O(α(n)) per op',space:'O(V)',notes:'Path compression + union by rank. Faster than BFS/DFS for repeated connectivity queries. Kruskal\'s MST uses this.'},
+    {name:'Kruskal (MST)',when:'Minimum spanning tree — connect all nodes with minimum total edge weight',time:'O(E log E)',space:'O(V)',notes:'Sort edges by weight, add each edge if it doesn\'t create a cycle (Union-Find check). Greedy approach.'},
+    {name:'Floyd-Warshall',when:'All-pairs shortest path',time:'O(V³)',space:'O(V²)',notes:'DP on intermediate vertices. Works with negative weights (no negative cycles). For dense graphs or when you need all pairs.'},
+  ];
+  document.getElementById('graph-algo-body').innerHTML=`
+    <div class="sec-head" style="color:var(--accent)">Algorithm comparison</div>
+    <table class="cx-table">
+      <thead><tr><th>Algorithm</th><th>Time</th><th>Use Case</th></tr></thead>
+      <tbody>${algos.map(a=>`<tr><td style="font-weight:600">${a.name}</td><td style="font-family:var(--mono)">${a.time}</td><td>${a.when}</td></tr>`).join('')}</tbody>
+    </table>
+
+    <div class="sec-head" style="color:var(--amber);margin-top:24px">Details</div>
+    ${algos.map(a=>`<div class="ds-card"><div class="ds-card-title">${a.name} <span style="font-size:10px;font-family:var(--mono);color:var(--text3);font-weight:400">${a.time} · ${a.space}</span></div><div class="ds-card-desc">${a.notes}</div><div class="ds-when">${a.when}</div></div>`).join('')}
+
+    <div class="sec-head" style="color:var(--ds);margin-top:24px">Quick decision guide</div>
+    <div class="ds-when" style="margin-bottom:10px">Unweighted shortest path? → BFS</div>
+    <div class="ds-when" style="margin-bottom:10px">Weighted shortest path (no negatives)? → Dijkstra</div>
+    <div class="ds-when" style="margin-bottom:10px">Weighted shortest path (with negatives)? → Bellman-Ford</div>
+    <div class="ds-when" style="margin-bottom:10px">All-pairs shortest path? → Floyd-Warshall (small V) or run Dijkstra from each node</div>
+    <div class="ds-when" style="margin-bottom:10px">Minimum spanning tree? → Kruskal (sparse) or Prim (dense)</div>
+    <div class="ds-when" style="margin-bottom:10px">Detect cycle in directed graph? → DFS with 3-color states</div>
+    <div class="ds-when" style="margin-bottom:10px">Detect cycle in undirected graph? → Union-Find (simpler) or DFS with parent tracking</div>
+    <div class="ds-when">Count connected components? → Union-Find or DFS from each unvisited node</div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CODE SNIPPETS
+// ═══════════════════════════════════════════════════════════
+function buildSnippets(){
+  const snips=[
+    {cat:'Array',items:[
+      {title:'Initialize 2D array',code:'const grid = Array.from({length: m}, () => new Array(n).fill(0));'},
+      {title:'Deep copy array',code:'const copy = arr.map(row => [...row]); // 2D\nconst copy1d = [...arr]; // 1D'},
+      {title:'Get all unique values',code:'const unique = [...new Set(arr)];'},
+      {title:'Find max/min',code:'const max = Math.max(...arr);\nconst min = Math.min(...arr);\n// For large arrays, use a loop (spread has stack limit)'},
+      {title:'Swap elements',code:'[arr[i], arr[j]] = [arr[j], arr[i]];'},
+      {title:'Flatten nested array',code:'const flat = arr.flat(Infinity);'},
+    ]},
+    {cat:'Map & Set',items:[
+      {title:'Frequency counter',code:'const freq = new Map();\nfor (const x of arr) freq.set(x, (freq.get(x) || 0) + 1);'},
+      {title:'Group by key',code:'const groups = new Map();\nfor (const item of arr) {\n  const key = getKey(item);\n  if (!groups.has(key)) groups.set(key, []);\n  groups.get(key).push(item);\n}'},
+      {title:'Map to sorted entries',code:'const sorted = [...map.entries()].sort((a, b) => b[1] - a[1]);'},
+    ]},
+    {cat:'Linked List',items:[
+      {title:'Dummy head pattern',code:'const dummy = {val: 0, next: null};\nlet tail = dummy;\n// build list...\ntail.next = newNode;\ntail = tail.next;\nreturn dummy.next; // skip dummy'},
+      {title:'Reverse linked list',code:'let prev = null, curr = head;\nwhile (curr) {\n  const next = curr.next;\n  curr.next = prev;\n  prev = curr;\n  curr = next;\n}\nreturn prev; // new head'},
+    ]},
+    {cat:'Tree',items:[
+      {title:'Inorder traversal (iterative)',code:'const result = [], stack = [];\nlet curr = root;\nwhile (curr || stack.length) {\n  while (curr) { stack.push(curr); curr = curr.left; }\n  curr = stack.pop();\n  result.push(curr.val);\n  curr = curr.right;\n}'},
+      {title:'Level-order traversal',code:'const result = [], queue = [root];\nwhile (queue.length) {\n  const level = [], size = queue.length;\n  for (let i = 0; i < size; i++) {\n    const node = queue.shift();\n    level.push(node.val);\n    if (node.left) queue.push(node.left);\n    if (node.right) queue.push(node.right);\n  }\n  result.push(level);\n}'},
+    ]},
+    {cat:'Graph',items:[
+      {title:'Build adjacency list',code:'const graph = Array.from({length: n}, () => []);\nfor (const [u, v] of edges) {\n  graph[u].push(v);\n  graph[v].push(u); // undirected\n}'},
+      {title:'4-directional grid traversal',code:'const dirs = [[0,1],[0,-1],[1,0],[-1,0]];\nfor (const [dr, dc] of dirs) {\n  const nr = row + dr, nc = col + dc;\n  if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {\n    // process (nr, nc)\n  }\n}'},
+    ]},
+    {cat:'Binary Search',items:[
+      {title:'Standard binary search',code:'let lo = 0, hi = arr.length - 1;\nwhile (lo <= hi) {\n  const mid = lo + Math.floor((hi - lo) / 2);\n  if (arr[mid] === target) return mid;\n  else if (arr[mid] < target) lo = mid + 1;\n  else hi = mid - 1;\n}\nreturn -1;'},
+      {title:'Left bound (first occurrence)',code:'let lo = 0, hi = arr.length;\nwhile (lo < hi) {\n  const mid = lo + Math.floor((hi - lo) / 2);\n  if (arr[mid] < target) lo = mid + 1;\n  else hi = mid;\n}\nreturn lo; // first index where arr[i] >= target'},
+    ]},
+    {cat:'Sorting tricks',items:[
+      {title:'Custom sort',code:'// Sort by second element descending\narr.sort((a, b) => b[1] - a[1]);\n\n// Sort strings by length, then alphabetically\nwords.sort((a, b) => a.length - b.length || a.localeCompare(b));'},
+      {title:'Bucket sort for frequency',code:'const buckets = Array.from({length: n + 1}, () => []);\nfor (const [val, freq] of freqMap) {\n  buckets[freq].push(val);\n}\n// Iterate buckets from high to low for top-k'},
+    ]},
+  ];
+  document.getElementById('snippets-body').innerHTML=snips.map(s=>`
+    <div class="sec-head" style="color:var(--accent)">${s.cat}</div>
+    ${s.items.map(i=>`<div class="ds-card"><div class="ds-card-title">${i.title}</div><div class="pd-code" style="margin-top:8px;font-size:11.5px">${escHtml(i.code)}</div></div>`).join('')}
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+showWelcome();
+</script>
+</body>
+</html>
