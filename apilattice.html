@@ -187,6 +187,7 @@ table.ref-table td:first-child{color:var(--text);font-weight:500}
   <div class="nav-item tool" onclick="showView('openapi-builder',this)"><span class="nicon">📝</span>OpenAPI Builder</div>
   <div class="nav-item tool" onclick="showView('req-visualizer',this)"><span class="nicon">👁</span>Request Visualizer</div>
   <div class="nav-item tool" onclick="showView('mock-builder',this)"><span class="nicon">🧪</span>Mock Builder</div>
+  <div class="nav-item tool" onclick="showView('schema-builder',this)"><span class="nicon">🧬</span>Schema Builder</div>
   <div class="ph-label ref" onclick="sbToggle(this)">Reference<span class="caret">▼</span></div>
   <div class="nav-item ref" onclick="showView('design-checklist',this)"><span class="nicon">✓</span>Design Checklist</div>
   <div class="nav-item ref" onclick="showView('maturity-model',this)"><span class="nicon">📊</span>Maturity Model</div>
@@ -259,6 +260,7 @@ table.ref-table td:first-child{color:var(--text);font-weight:500}
 <div id="view-openapi-builder" class="view"><div class="tool-hdr"><span class="hdr-badge tool">Tool</span><div><div class="htitle">OpenAPI Builder</div><div class="hsub">Build OpenAPI 3.0 specs interactively</div></div></div><div class="scroll-view" id="openapi-builder-body"></div></div>
 <div id="view-req-visualizer" class="view"><div class="tool-hdr"><span class="hdr-badge tool">Tool</span><div><div class="htitle">Request Visualizer</div><div class="hsub">Visualize HTTP request/response flows</div></div></div><div class="scroll-view" id="req-visualizer-body"></div></div>
 <div id="view-mock-builder" class="view"><div class="tool-hdr"><span class="hdr-badge tool">Tool</span><div><div class="htitle">Mock Builder</div><div class="hsub">Generate mock responses for testing</div></div></div><div class="scroll-view" id="mock-builder-body"></div></div>
+<div id="view-schema-builder" class="view"><div class="tool-hdr"><span class="hdr-badge tool">Tool</span><div><div class="htitle">Schema Builder</div><div class="hsub">Design JSON request/response schemas visually</div></div></div><div class="scroll-view" id="schema-builder-body"></div></div>
 <div id="view-design-checklist" class="view"><div class="tool-hdr"><span class="hdr-badge ref">Reference</span><div><div class="htitle">API Design Checklist</div><div class="hsub">Pre-launch review for production APIs</div></div></div><div class="scroll-view" id="design-checklist-body"></div></div>
 <div id="view-maturity-model" class="view"><div class="tool-hdr"><span class="hdr-badge ref">Reference</span><div><div class="htitle">Richardson Maturity Model</div><div class="hsub">The 4 levels of REST maturity</div></div></div><div class="scroll-view" id="maturity-model-body"></div></div>
 <div id="view-common-mistakes" class="view"><div class="tool-hdr"><span class="hdr-badge ref">Reference</span><div><div class="htitle">Common Mistakes</div><div class="hsub">Anti-patterns to avoid in API design</div></div></div><div class="scroll-view" id="common-mistakes-body"></div></div>
@@ -963,6 +965,295 @@ lazyBuild('mock-builder',()=>{
     });items.push(o);}
     const out=document.getElementById('mk-out');out.style.display='block';out.textContent=JSON.stringify({data:items,total:cnt,page:1},null,2);
   };
+});
+
+// ── SCHEMA BUILDER ──
+lazyBuild('schema-builder',()=>{
+  const el=document.getElementById('schema-builder-body');
+  el.innerHTML=`
+    <div class="sec-head" style="color:var(--tool)">Schema Name</div>
+    <div class="builder-row"><label>Name</label><input type="text" id="sb-name" value="User" placeholder="Resource name"/></div>
+    <div class="builder-row"><label>Context</label><select id="sb-ctx"><option>Request Body</option><option>Response Body</option><option>Query Params</option></select></div>
+    <div class="sec-head" style="color:var(--amber)">Quick Start</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      <button class="btn" onclick="sbPreset('user')">👤 User</button>
+      <button class="btn" onclick="sbPreset('order')">🛒 Order</button>
+      <button class="btn" onclick="sbPreset('product')">📦 Product</button>
+      <button class="btn" onclick="sbPreset('payment')">💳 Payment</button>
+      <button class="btn" onclick="sbPreset('event')">📡 Event</button>
+      <button class="btn" onclick="sbToggleImport()" style="margin-left:auto">📋 Import JSON</button>
+    </div>
+    <div id="sb-import-panel" style="display:none;margin-bottom:12px">
+      <textarea class="fb-ta" id="sb-import-ta" placeholder='Paste a JSON example here, e.g.:\n{"id": 1, "name": "Alice", "email": "alice@example.com", "tags": ["a","b"]}' style="min-height:80px;font-family:var(--mono);font-size:11px"></textarea>
+      <button class="btn primary" onclick="sbImportJSON()" style="margin-top:6px">Import → Generate Fields</button>
+    </div>
+    <div class="sec-head" style="color:var(--accent)">Fields <button class="btn primary" onclick="sbAddField()" style="margin-left:8px">+ Add Field</button></div>
+    <div id="sb-fields"></div>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" onclick="sbGenerate()">Generate JSON Schema</button>
+      <button class="btn" onclick="sbGenExample()">Generate Example</button>
+      <button class="btn" onclick="sbCopy('sb-schema-out')">Copy Schema</button>
+      <button class="btn" onclick="sbCopy('sb-example-out')">Copy Example</button>
+      <button class="btn danger" onclick="sbReset()">Reset</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px" id="sb-outputs">
+      <div><div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-bottom:4px">JSON SCHEMA</div><pre class="code" id="sb-schema-out" style="min-height:120px;display:none"></pre></div>
+      <div><div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-bottom:4px">EXAMPLE</div><pre class="code" id="sb-example-out" style="min-height:120px;display:none"></pre></div>
+    </div>
+  `;
+
+  window._sbFields=[];
+  let _sbId=0;
+  function mkField(name,type,opts={}){return{id:++_sbId,name,type,required:opts.req!==false,desc:opts.desc||'',enumVals:opts.enumVals||'',min:opts.min||'',max:opts.max||'',minLen:opts.minLen||'',maxLen:opts.maxLen||'',format:opts.format||'',items:opts.items||'string',children:opts.children||[],parentId:opts.parentId||null};}
+
+  window.sbAddField=function(parentId){
+    const f=mkField('','string',{parentId});
+    if(parentId){const parent=_sbFindField(_sbFields,parentId);if(parent)parent.children.push(f);}
+    else _sbFields.push(f);
+    sbRender();
+  };
+
+  function _sbFindField(fields,id){for(const f of fields){if(f.id===id)return f;const c=_sbFindField(f.children,id);if(c)return c;}return null;}
+  function _sbRemoveField(fields,id){for(let i=0;i<fields.length;i++){if(fields[i].id===id){fields.splice(i,1);return true;}if(_sbRemoveField(fields[i].children,id))return true;}return false;}
+
+  window.sbRemField=function(id){_sbRemoveField(_sbFields,id);sbRender();};
+
+  window.sbRender=function(){
+    const c=document.getElementById('sb-fields');
+    if(!_sbFields.length){c.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px">No fields yet. Click + Add Field or pick a preset.</div>';return;}
+    c.innerHTML=renderFields(_sbFields,0);
+  };
+
+  function renderFields(fields,depth){
+    return fields.map(f=>{
+      const indent=depth*20;
+      const isObj=f.type==='object';
+      const isArr=f.type==='array';
+      const isEnum=f.type==='enum';
+      const isNum=f.type==='integer'||f.type==='number';
+      const isStr=f.type==='string';
+      const canNest=isObj||(isArr&&f.items==='object');
+      return `<div style="margin-left:${indent}px;margin-bottom:4px">
+        <div class="ep-row" style="flex-wrap:wrap;gap:6px;cursor:default">
+          ${depth>0?'<span style="color:var(--text3);font-size:10px">↳</span>':''}
+          <input value="${f.name}" placeholder="field_name" onchange="_sbFindFieldG(${f.id}).name=this.value" style="width:110px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:12px;font-family:var(--mono);padding:4px 8px"/>
+          <select onchange="_sbFindFieldG(${f.id}).type=this.value;sbRender()" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:10px;font-family:var(--mono);padding:3px 4px;width:78px">
+            ${['string','integer','number','boolean','object','array','enum'].map(t=>`<option ${t===f.type?'selected':''}>${t}</option>`).join('')}
+          </select>
+          <label style="font-size:10px;color:var(--text3);display:flex;align-items:center;gap:3px;cursor:pointer">
+            <input type="checkbox" ${f.required?'checked':''} onchange="_sbFindFieldG(${f.id}).required=this.checked" style="margin:0"/>req
+          </label>
+          ${isStr?`<select onchange="_sbFindFieldG(${f.id}).format=this.value" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text3);font-size:9px;font-family:var(--mono);padding:2px 4px;width:72px">
+            <option value="" ${!f.format?'selected':''}>format…</option>
+            ${['email','uri','date-time','date','uuid','ipv4','hostname'].map(fmt=>`<option ${fmt===f.format?'selected':''}>${fmt}</option>`).join('')}
+          </select>`:''}
+          ${isStr?`<input value="${f.maxLen}" placeholder="maxLen" onchange="_sbFindFieldG(${f.id}).maxLen=this.value" style="width:58px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text3);font-size:9px;font-family:var(--mono);padding:2px 4px"/>`:''}
+          ${isNum?`<input value="${f.min}" placeholder="min" onchange="_sbFindFieldG(${f.id}).min=this.value" style="width:44px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text3);font-size:9px;font-family:var(--mono);padding:2px 4px"/>`:''}
+          ${isNum?`<input value="${f.max}" placeholder="max" onchange="_sbFindFieldG(${f.id}).max=this.value" style="width:44px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text3);font-size:9px;font-family:var(--mono);padding:2px 4px"/>`:''}
+          ${isEnum?`<input value="${f.enumVals}" placeholder="val1|val2|val3" onchange="_sbFindFieldG(${f.id}).enumVals=this.value" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text3);font-size:9px;font-family:var(--mono);padding:2px 6px"/>`:''}
+          ${isArr?`<select onchange="_sbFindFieldG(${f.id}).items=this.value;sbRender()" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text3);font-size:9px;font-family:var(--mono);padding:2px 4px;width:72px">
+            ${['string','integer','number','boolean','object'].map(t=>`<option ${t===f.items?'selected':''}>${t}</option>`).join('')}
+          </select>`:''}
+          ${canNest?`<button class="btn" onclick="sbAddField(${f.id})" style="font-size:9px;padding:2px 8px">+ child</button>`:''}
+          <input value="${f.desc}" placeholder="description" onchange="_sbFindFieldG(${f.id}).desc=this.value" style="flex:1;min-width:80px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text3);font-size:9px;padding:2px 6px"/>
+          <span class="ep-rm" onclick="sbRemField(${f.id})">✕</span>
+        </div>
+        ${canNest&&f.children.length?renderFields(f.children,depth+1):''}
+      </div>`;
+    }).join('');
+  }
+
+  window._sbFindFieldG=function(id){return _sbFindField(_sbFields,id);};
+
+  // ── Presets ──
+  const PRESETS={
+    user:[
+      mkField('id','string',{desc:'Unique identifier',format:'uuid'}),
+      mkField('name','string',{desc:'Full name',maxLen:'100'}),
+      mkField('email','string',{desc:'Email address',format:'email',maxLen:'254'}),
+      mkField('age','integer',{req:false,desc:'Age in years',min:'0',max:'150'}),
+      mkField('role','enum',{desc:'User role',enumVals:'user|admin|moderator'}),
+      mkField('created_at','string',{desc:'Account creation timestamp',format:'date-time'}),
+    ],
+    order:[
+      mkField('id','string',{desc:'Order ID',format:'uuid'}),
+      mkField('customer_id','string',{desc:'Customer reference'}),
+      mkField('status','enum',{desc:'Order status',enumVals:'pending|processing|shipped|delivered|cancelled'}),
+      mkField('total','number',{desc:'Order total',min:'0'}),
+      mkField('currency','string',{desc:'ISO currency code',maxLen:'3'}),
+      mkField('items','array',{desc:'Line items',items:'object',children:[
+        mkField('product_id','string',{desc:'Product ID',parentId:0}),
+        mkField('quantity','integer',{desc:'Quantity',min:'1',parentId:0}),
+        mkField('price','number',{desc:'Unit price',min:'0',parentId:0}),
+      ]}),
+      mkField('created_at','string',{desc:'Order timestamp',format:'date-time'}),
+    ],
+    product:[
+      mkField('id','string',{desc:'Product ID',format:'uuid'}),
+      mkField('name','string',{desc:'Product name',maxLen:'200'}),
+      mkField('description','string',{req:false,desc:'Product description',maxLen:'2000'}),
+      mkField('price','number',{desc:'Price',min:'0'}),
+      mkField('currency','string',{desc:'ISO currency',maxLen:'3'}),
+      mkField('category','string',{desc:'Product category'}),
+      mkField('in_stock','boolean',{desc:'Availability'}),
+      mkField('tags','array',{req:false,desc:'Tags',items:'string'}),
+    ],
+    payment:[
+      mkField('id','string',{desc:'Payment ID',format:'uuid'}),
+      mkField('amount','number',{desc:'Amount in smallest currency unit',min:'0'}),
+      mkField('currency','string',{desc:'ISO currency',maxLen:'3'}),
+      mkField('status','enum',{desc:'Payment status',enumVals:'pending|succeeded|failed|refunded'}),
+      mkField('method','enum',{desc:'Payment method',enumVals:'card|bank_transfer|wallet'}),
+      mkField('customer_id','string',{desc:'Customer reference'}),
+      mkField('metadata','object',{req:false,desc:'Custom key-value pairs',children:[]}),
+      mkField('created_at','string',{desc:'Payment timestamp',format:'date-time'}),
+    ],
+    event:[
+      mkField('id','string',{desc:'Event ID',format:'uuid'}),
+      mkField('type','string',{desc:'Event type (e.g., order.completed)'}),
+      mkField('created_at','string',{desc:'When the event occurred',format:'date-time'}),
+      mkField('data','object',{desc:'Event payload',children:[
+        mkField('id','string',{desc:'Resource ID',parentId:0}),
+      ]}),
+      mkField('api_version','string',{req:false,desc:'API version that generated this'}),
+    ],
+  };
+
+  window.sbPreset=function(key){
+    _sbId=0;
+    // Deep clone presets with fresh IDs
+    function cloneFields(fields,parentId){
+      return fields.map(f=>{
+        const nf=mkField(f.name,f.type,{req:f.required,desc:f.desc,enumVals:f.enumVals,min:f.min,max:f.max,minLen:f.minLen,maxLen:f.maxLen,format:f.format,items:f.items,parentId});
+        if(f.children.length)nf.children=cloneFields(f.children,nf.id);
+        return nf;
+      });
+    }
+    const preset=PRESETS[key];
+    if(!preset)return;
+    _sbFields=cloneFields(preset,null);
+    document.getElementById('sb-name').value=key.charAt(0).toUpperCase()+key.slice(1);
+    sbRender();
+    document.getElementById('sb-schema-out').style.display='none';
+    document.getElementById('sb-example-out').style.display='none';
+  };
+
+  // ── Import from JSON ──
+  window.sbToggleImport=function(){
+    const p=document.getElementById('sb-import-panel');
+    p.style.display=p.style.display==='none'?'block':'none';
+  };
+
+  window.sbImportJSON=function(){
+    const raw=document.getElementById('sb-import-ta').value.trim();
+    if(!raw)return;
+    try{
+      const obj=JSON.parse(raw);
+      _sbId=0;_sbFields=[];
+      function inferFields(o,parentId){
+        return Object.entries(o).map(([k,v])=>{
+          if(v===null||v===undefined)return mkField(k,'string',{req:false,parentId});
+          if(Array.isArray(v)){
+            if(v.length&&typeof v[0]==='object'&&v[0]!==null){
+              const nf=mkField(k,'array',{items:'object',parentId});
+              nf.children=inferFields(v[0],nf.id);
+              return nf;
+            }
+            const itemType=v.length?typeof v[0]==='number'?(Number.isInteger(v[0])?'integer':'number'):'string':'string';
+            return mkField(k,'array',{items:itemType,parentId});
+          }
+          if(typeof v==='object'){
+            const nf=mkField(k,'object',{parentId});
+            nf.children=inferFields(v,nf.id);
+            return nf;
+          }
+          if(typeof v==='boolean')return mkField(k,'boolean',{parentId});
+          if(typeof v==='number')return mkField(k,Number.isInteger(v)?'integer':'number',{parentId});
+          // String — detect formats
+          const s=String(v);
+          let fmt='';
+          if(/^[a-f0-9-]{36}$/i.test(s))fmt='uuid';
+          else if(/^.+@.+\..+$/.test(s))fmt='email';
+          else if(/^\d{4}-\d{2}-\d{2}T/.test(s))fmt='date-time';
+          else if(/^\d{4}-\d{2}-\d{2}$/.test(s))fmt='date';
+          else if(/^https?:\/\//.test(s))fmt='uri';
+          return mkField(k,'string',{format:fmt,parentId});
+        });
+      }
+      _sbFields=inferFields(obj,null);
+      sbRender();
+      document.getElementById('sb-import-panel').style.display='none';
+      document.getElementById('sb-import-ta').value='';
+    }catch(e){alert('Invalid JSON: '+e.message);}
+  };
+
+  // ── Generate ──
+  window.sbGenerate=function(){
+    function buildProps(fields){
+      const props={},req=[];
+      fields.forEach(f=>{
+        if(!f.name)return;
+        const p={};
+        if(f.desc)p.description=f.desc;
+        if(f.type==='enum'){p.type='string';p.enum=f.enumVals.split('|').map(v=>v.trim()).filter(Boolean);}
+        else if(f.type==='object'){p.type='object';if(f.children.length){const sub=buildProps(f.children);p.properties=sub.properties;if(sub.required.length)p.required=sub.required;}}
+        else if(f.type==='array'){p.type='array';if(f.items==='object'&&f.children.length){const sub=buildProps(f.children);p.items={type:'object',properties:sub.properties};if(sub.required.length)p.items.required=sub.required;}else{p.items={type:f.items||'string'};}}
+        else{p.type=f.type;}
+        if(f.format)p.format=f.format;
+        if(f.maxLen)p.maxLength=parseInt(f.maxLen);
+        if(f.minLen)p.minLength=parseInt(f.minLen);
+        if(f.min!=='')p.minimum=parseFloat(f.min);
+        if(f.max!=='')p.maximum=parseFloat(f.max);
+        props[f.name]=p;
+        if(f.required)req.push(f.name);
+      });
+      return{properties:props,required:req};
+    }
+    const name=document.getElementById('sb-name').value||'Schema';
+    const r=buildProps(_sbFields);
+    const schema={$schema:'https://json-schema.org/draft/2020-12/schema',title:name,type:'object',properties:r.properties};
+    if(r.required.length)schema.required=r.required;
+    schema.additionalProperties=false;
+    const out=document.getElementById('sb-schema-out');
+    out.style.display='block';out.textContent=JSON.stringify(schema,null,2);
+  };
+
+  window.sbGenExample=function(){
+    const names=['Alice','Bob','Charlie','Diana','Eve'];
+    const doms=['example.com','test.io'];
+    function genVal(f){
+      if(f.type==='string'){
+        if(f.format==='email')return names[Math.floor(Math.random()*names.length)].toLowerCase()+'@'+doms[Math.floor(Math.random()*doms.length)];
+        if(f.format==='uuid')return crypto.randomUUID?.()|| '550e8400-e29b-41d4-a716-446655440000';
+        if(f.format==='date-time')return new Date().toISOString();
+        if(f.format==='date')return new Date().toISOString().split('T')[0];
+        if(f.format==='uri')return'https://example.com/'+f.name;
+        return'sample_'+f.name;
+      }
+      if(f.type==='integer')return f.min!==''?parseInt(f.min):Math.floor(Math.random()*100);
+      if(f.type==='number')return f.min!==''?parseFloat(f.min):Math.round(Math.random()*1000)/10;
+      if(f.type==='boolean')return true;
+      if(f.type==='enum'){const v=f.enumVals.split('|').map(x=>x.trim()).filter(Boolean);return v[0]||'value';}
+      if(f.type==='object'){const o={};f.children.forEach(c=>{if(c.name)o[c.name]=genVal(c);});return o;}
+      if(f.type==='array'){
+        if(f.items==='object'&&f.children.length){const o={};f.children.forEach(c=>{if(c.name)o[c.name]=genVal(c);});return[o];}
+        if(f.items==='integer')return[1,2,3];
+        if(f.items==='boolean')return[true,false];
+        return['item_1','item_2'];
+      }
+      return null;
+    }
+    const example={};_sbFields.forEach(f=>{if(f.name)example[f.name]=genVal(f);});
+    const out=document.getElementById('sb-example-out');
+    out.style.display='block';out.textContent=JSON.stringify(example,null,2);
+  };
+
+  window.sbCopy=function(id){const t=document.getElementById(id).textContent;if(t)navigator.clipboard.writeText(t);};
+  window.sbReset=function(){_sbFields=[];_sbId=0;sbRender();document.getElementById('sb-schema-out').style.display='none';document.getElementById('sb-example-out').style.display='none';};
+
+  // Seed with User preset
+  sbPreset('user');
+  sbRender();
 });
 
 // ── DESIGN CHECKLIST ──
